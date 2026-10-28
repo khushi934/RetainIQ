@@ -176,7 +176,16 @@ npm run build
 
 ### Step 5: Start the Application
 
-#### Terminal 1 — Start Backend Server:
+#### Option A: 1-Click Launchers (Easiest)
+- **Windows File Explorer:** Double-click [`start-retainiq.bat`](file:///c:/Users/khush/OneDrive/Documents/Desktop/RetainIQ/start-retainiq.bat) in the project root.
+- **PowerShell:**
+  ```powershell
+  .\start-retainiq.ps1
+  ```
+*This verifies the MySQL80 service, starts both backend and frontend in separate persistent windows, and opens your browser directly to the login page.*
+
+#### Option B: Manual Terminal Launch
+##### Terminal 1 — Start Backend Server:
 ```powershell
 cd backend
 .\venv\Scripts\Activate.ps1
@@ -184,7 +193,7 @@ uvicorn app.main:app --host 127.0.0.1 --port 8000 --reload
 ```
 *API Documentation will be accessible at: `http://127.0.0.1:8000/docs`*
 
-#### Terminal 2 — Start Frontend Server:
+##### Terminal 2 — Start Frontend Server:
 ```powershell
 cd frontend
 npm run dev -- --host 127.0.0.1 --port 5173
