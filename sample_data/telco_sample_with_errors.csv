@@ -1,0 +1,56 @@
+customerID,gender,SeniorCitizen,Partner,Dependents,tenure,PhoneService,MultipleLines,InternetService,OnlineSecurity,OnlineBackup,DeviceProtection,TechSupport,StreamingTV,StreamingMovies,Contract,PaperlessBilling,PaymentMethod,MonthlyCharges,TotalCharges,SubscriptionStatus,LastActivityDate,EngagementScore,Churn
+CUST-00001,Female,0,No,Yes,5,Yes,No,DSL,No,Yes,No,Yes,No,No,One year,Yes,Credit card (automatic),58.21,284.12,Churned,2026-05-23,70.4,Yes
+CUST-00002,Female,0,No,Yes,58,Yes,No,No,No internet service,No internet service,No internet service,No internet service,No internet service,No internet service,Two year,Yes,Credit card (automatic),20.96,1205.42,Active,2026-10-08,98.8,No
+CUST-00003,Male,1,No,No,67,Yes,No,Fiber optic,No,Yes,No,Yes,No,No,One year,No,Credit card (automatic),112.23,7255.59,Active,2026-10-03,72.3,No
+CUST-00004,Female,0,Yes,Yes,5,Yes,No,DSL,Yes,Yes,Yes,Yes,No,No,Month-to-month,No,Mailed check,48.61,241.22,Churned,2026-06-16,56.2,Yes
+CUST-00005,Female,0,Yes,No,36,Yes,Yes,Fiber optic,No,Yes,No,Yes,No,No,One year,Yes,Credit card (automatic),104.7,3751.15,Churned,2026-05-20,74.4,Yes
+CUST-00006,Male,0,Yes,No,41,Yes,No,Fiber optic,Yes,No,No,Yes,No,No,One year,Yes,Bank transfer (automatic),108.17,4587.46,Active,2026-10-07,63.3,No
+CUST-00007,Male,0,Yes,Yes,8,Yes,Yes,Fiber optic,No,No,Yes,Yes,No,Yes,One year,No,Electronic check,77.33,645.3,Churned,2026-04-30,50.4,Yes
+CUST-00008,Male,0,Yes,Yes,1,Yes,Yes,No,No internet service,No internet service,No internet service,No internet service,No internet service,No internet service,Month-to-month,No,Credit card (automatic),20.66,20.17,Churned,2026-08-16,44.0,Yes
+CUST-00009,Male,1,No,No,3,Yes,No,Fiber optic,No,Yes,No,Yes,No,Yes,Month-to-month,Yes,Credit card (automatic),95.45,300.05,Churned,2026-06-20,35.9,Yes
+CUST-00010,Female,0,Yes,No,10,Yes,Yes,Fiber optic,Yes,No,No,Yes,Yes,No,Month-to-month,Yes,Electronic check,88.64,886.58,Churned,2026-06-21,18.0,Yes
+CUST-00011,Male,0,Yes,Yes,58,Yes,Yes,DSL,Yes,No,Yes,No,Yes,Yes,One year,No,Mailed check,40.96,2399.22,Active,2026-09-16,98.6,No
+CUST-00012,Female,0,Yes,No,38,Yes,Yes,No,No internet service,No internet service,No internet service,No internet service,No internet service,No internet service,Two year,Yes,Electronic check,20.78,824.9,Active,2026-08-19,80.8,No
+CUST-00013,Female,0,Yes,Yes,1,Yes,Yes,Fiber optic,Yes,Yes,Yes,No,Yes,Yes,Month-to-month,No,Credit card (automatic),75.05,75.8,Active,2026-10-03,25.9,No
+CUST-00014,Female,0,Yes,Yes,34,Yes,No,DSL,Yes,No,Yes,No,Yes,No,Month-to-month,Yes,Mailed check,67.91,2281.58,Active,2026-09-12,65.7,No
+CUST-00015,Male,0,No,No,20,Yes,No,Fiber optic,Yes,No,No,Yes,No,Yes,Two year,No,Bank transfer (automatic),81.19,1572.27,Active,2026-09-03,71.5,No
+CUST-00016,Male,0,No,No,55,Yes,Yes,Fiber optic,Yes,No,No,No,Yes,No,Month-to-month,No,Bank transfer (automatic),101.5,5758.43,Active,2026-09-19,68.8,No
+CUST-00017,Female,0,Yes,Yes,52,Yes,No,No,No internet service,No internet service,No internet service,No internet service,No internet service,No internet service,Month-to-month,No,Electronic check,25.23,1276.64,Churned,2026-05-30,77.4,Yes
+CUST-00018,Male,1,No,No,23,Yes,No,DSL,No,Yes,Yes,No,No,Yes,Month-to-month,Yes,Credit card (automatic),48.24,1121.15,Churned,2026-06-12,58.3,Yes
+CUST-00019,Female,0,No,Yes,71,Yes,Yes,No,No internet service,No internet service,No internet service,No internet service,No internet service,No internet service,One year,No,Credit card (automatic),21.3,1514.53,Active,2026-10-01,98.1,No
+CUST-00020,Male,0,Yes,Yes,7,No,No,No,No internet service,No internet service,No internet service,No internet service,No internet service,No internet service,Month-to-month,No,Mailed check,20.26,143.35,Churned,2026-08-05,38.2,Yes
+CUST-00021,Male,0,No,Yes,1,Yes,No,DSL,Yes,Yes,No,Yes,Yes,Yes,Two year,No,Credit card (automatic),40.79,42.74,Active,2026-10-06,70.8,No
+CUST-00022,Female,1,Yes,No,70,No,No,DSL,No,Yes,Yes,Yes,Yes,No,Month-to-month,Yes,Bank transfer (automatic),61.06,4246.32,Active,2026-09-05,66.6,No
+CUST-00023,Female,1,Yes,No,63,Yes,Yes,Fiber optic,Yes,Yes,No,No,Yes,Yes,Two year,No,Bank transfer (automatic),112.41,6800.19,Active,2026-08-06,88.7,No
+CUST-00024,Female,0,Yes,No,53,Yes,No,Fiber optic,No,No,Yes,Yes,No,Yes,Month-to-month,Yes,Mailed check,95.73,5316.3,Active,2026-08-02,63.1,No
+CUST-00025,Male,1,No,Yes,62,Yes,Yes,DSL,Yes,Yes,Yes,No,Yes,Yes,One year,No,Credit card (automatic),53.57,3159.5,Active,2026-09-29,91.5,No
+CUST-00026,Female,0,Yes,No,59,Yes,Yes,DSL,No,No,Yes,Yes,No,Yes,Month-to-month,Yes,Bank transfer (automatic),45.62,2636.11,Churned,2026-06-03,79.8,Yes
+CUST-00027,Female,1,Yes,Yes,61,Yes,No,DSL,Yes,No,No,No,Yes,No,Month-to-month,Yes,Credit card (automatic),66.25,3868.0,Active,2026-07-28,78.1,No
+CUST-00028,Female,0,No,No,10,Yes,No,Fiber optic,No,Yes,Yes,No,Yes,No,One year,No,Electronic check,70.07,689.93,Active,2026-10-12,35.7,No
+CUST-00029,Male,0,Yes,Yes,37,Yes,Yes,DSL,Yes,Yes,Yes,Yes,No,No,Month-to-month,Yes,Bank transfer (automatic),68.84,2422.94,Churned,2026-07-08,69.3,Yes
+CUST-00030,Female,0,Yes,Yes,6,Yes,Yes,Fiber optic,No,Yes,No,No,No,Yes,Month-to-month,Yes,Bank transfer (automatic),106.93,645.09,Churned,2026-09-20,36.4,Yes
+CUST-00031,Male,0,No,No,44,Yes,No,DSL,Yes,Yes,Yes,Yes,Yes,No,One year,Yes,Credit card (automatic),41.0,1748.05,Active,2026-10-22,77.2,No
+CUST-00032,Female,0,No,Yes,26,Yes,Yes,No,No internet service,No internet service,No internet service,No internet service,No internet service,No internet service,One year,Yes,Electronic check,24.18,621.05,Active,2026-09-19,80.8,No
+CUST-00033,Male,0,No,Yes,15,Yes,No,Fiber optic,No,No,No,No,Yes,Yes,One year,Yes,Mailed check,83.29,1243.71,Churned,2026-07-07,61.2,Yes
+CUST-00034,Female,0,No,Yes,9,Yes,Yes,Fiber optic,Yes,No,No,Yes,No,Yes,Month-to-month,Yes,Mailed check,107.03,970.23,Churned,2026-06-10,24.8,Yes
+CUST-00035,Female,1,Yes,No,50,Yes,No,Fiber optic,No,Yes,No,Yes,No,Yes,Month-to-month,Yes,Credit card (automatic),70.74,3492.42,Churned,2026-06-18,64.6,Yes
+CUST-00036,Male,0,Yes,Yes,12,Yes,Yes,Fiber optic,Yes,Yes,No,Yes,Yes,No,One year,No,Electronic check,107.68,1308.16,Churned,2026-08-01,54.8,Yes
+CUST-00037,Male,0,Yes,Yes,26,Yes,No,Fiber optic,Yes,Yes,No,No,No,No,One year,No,Bank transfer (automatic),86.7,2246.87,Churned,2026-08-28,64.8,Yes
+CUST-00038,Male,0,Yes,Yes,35,Yes,Yes,Fiber optic,No,No,No,Yes,No,No,Two year,No,Bank transfer (automatic),76.17,2617.7,Active,2026-09-12,72.4,No
+CUST-00039,Male,0,No,No,52,Yes,No,DSL,Yes,No,Yes,No,No,Yes,Month-to-month,No,Electronic check,67.59,3469.34,Active,2026-08-22,58.2,No
+CUST-00040,Male,0,No,Yes,58,Yes,Yes,DSL,Yes,Yes,No,Yes,Yes,No,Two year,No,Electronic check,54.18,3274.9,Active,2026-09-09,99.0,No
+CUST-00041,Male,0,No,No,41,Yes,No,DSL,Yes,No,No,No,Yes,Yes,Month-to-month,No,Mailed check,54.84,2149.92,Churned,2026-07-10,67.9,Yes
+CUST-00042,Female,0,No,No,60,Yes,No,DSL,No,No,Yes,Yes,Yes,No,One year,No,Electronic check,55.57,3358.43,Active,2026-08-18,84.9,No
+CUST-00043,Female,0,Yes,No,72,Yes,Yes,Fiber optic,Yes,Yes,Yes,Yes,No,No,Month-to-month,No,Electronic check,70.31,5156.82,Active,2026-09-23,46.8,No
+CUST-00044,Male,0,No,No,25,Yes,Yes,DSL,Yes,No,Yes,Yes,No,No,Two year,No,Mailed check,64.43,1642.74,Active,2026-10-07,92.7,No
+CUST-00045,Female,0,Yes,Yes,24,Yes,Yes,Fiber optic,Yes,Yes,No,Yes,Yes,No,Month-to-month,Yes,Mailed check,111.33,2704.5,Churned,2026-05-12,42.6,Yes
+CUST-00046,Male,0,Yes,No,23,Yes,No,DSL,Yes,No,No,No,Yes,No,Month-to-month,Yes,Electronic check,46.65,1051.16,Active,2026-08-18,64.3,No
+CUST-00047,Female,0,Yes,Yes,57,Yes,Yes,Fiber optic,No,Yes,Yes,No,No,No,Month-to-month,No,Mailed check,97.42,5313.85,Churned,2026-09-25,54.4,Yes
+CUST-00048,Female,1,No,Yes,10,Yes,No,Fiber optic,Yes,Yes,No,Yes,No,No,Month-to-month,Yes,Credit card (automatic),101.49,967.58,Churned,2026-07-11,34.5,Yes
+CUST-00049,Male,1,No,No,39,Yes,No,DSL,No,No,Yes,No,No,No,Month-to-month,Yes,Credit card (automatic),65.21,2425.59,Active,2026-09-16,61.4,No
+CUST-00050,Female,0,No,No,1,No,No,Fiber optic,Yes,No,No,No,No,No,Two year,Yes,Mailed check,77.2,79.85,Active,2026-09-30,50.5,No
+,Male,0,No,Yes,28,Yes,No,Fiber optic,No,Yes,No,Yes,Yes,No,Two year,No,Bank transfer (automatic),95.68,2674.86,Active,2026-08-09,70.3,No
+CUST-00052,Male,0,Yes,No,17,Yes,No,DSL,Yes,No,Yes,Yes,Yes,Yes,Month-to-month,No,Electronic check,INVALID_NUMBER,1064.7,Churned,2026-08-16,54.7,Yes
+CUST-00053,Male,0,Yes,No,-12,Yes,No,DSL,No,Yes,Yes,Yes,Yes,No,Month-to-month,No,Bank transfer (automatic),60.3,1270.23,Active,2026-09-16,55.2,No
+CUST-00054,Female,0,No,No,70,Yes,No,DSL,No,Yes,No,No,No,No,Two year,No,Electronic check,52.97,3540.85,Active,99-99-2026,88.3,No
+CUST-00001,Male,0,Yes,Yes,70,Yes,No,DSL,No,Yes,Yes,Yes,No,No,Month-to-month,No,Mailed check,61.35,4474.15,Churned,2026-08-26,84.0,Yes
