@@ -7,7 +7,8 @@ import {
   Investigation, Campaign, Report, AssistantAnswer
 } from '../types';
 
-const API_BASE = '/api';
+const RAW_API_URL = (import.meta.env.VITE_API_URL as string | undefined) || '';
+const API_BASE = RAW_API_URL ? `${RAW_API_URL.replace(/\/$/, '')}/api` : '/api';
 
 function getAuthHeader(): Record<string, string> {
   const token = localStorage.getItem('retainiq_token');

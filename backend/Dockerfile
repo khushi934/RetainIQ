@@ -20,3 +20,4 @@ COPY . .
 EXPOSE 8000
 
 CMD ["sh", "-c", "alembic upgrade head && python seed_demo_data.py && uvicorn app.main:app --host 0.0.0.0 --port 8000"]
+

@@ -45,26 +45,21 @@ describe('RetainIQ Frontend Platform & API Client Tests', () => {
 
   it('formats Decision Lab calculation payload with accurate numeric normalization', async () => {
     const mockResponse = {
-      scenario_id: null,
-      name: 'Strategy A',
-      target_segment: 'High Risk',
-      contact_count: 350,
+      targeted_customers: 350,
       total_campaign_cost: 4025,
       expected_incremental_retained: 28.35,
-      expected_preserved_revenue: 8505,
+      expected_incremental_revenue: 8505,
       expected_net_benefit: 4480,
-      roi_percentage: 111.3,
+      roi_pct: 111.3,
       cost_per_incremental_retained: 141.98,
       break_even_retention_uplift: 0.038,
-      is_profitable: true,
-      budget_sufficient: true,
-      downside_net_benefit: 2470,
-      upside_net_benefit: 6490,
-      sensitivity_analysis: {
-        downside: { retention_uplift: 0.12, net_benefit: 2470, roi: 61.3 },
-        base: { retention_uplift: 0.18, net_benefit: 4480, roi: 111.3 },
-        upside: { retention_uplift: 0.24, net_benefit: 6490, roi: 161.2 },
-      },
+      calculation_version: 'v1.0',
+      calculated_at: new Date().toISOString(),
+      sensitivity_analysis: [
+        { case_name: 'Downside', uplift: 0.12, incremental_retained: 18.9, incremental_revenue: 5670, net_benefit: 1645, roi_pct: 40.87 },
+        { case_name: 'Base', uplift: 0.18, incremental_retained: 28.35, incremental_revenue: 8505, net_benefit: 4480, roi_pct: 111.3 },
+        { case_name: 'Upside', uplift: 0.24, incremental_retained: 37.8, incremental_revenue: 11340, net_benefit: 7315, roi_pct: 181.74 },
+      ],
     };
 
     const fetchSpy = vi.spyOn(globalThis, 'fetch').mockResolvedValueOnce({
@@ -95,9 +90,8 @@ describe('RetainIQ Frontend Platform & API Client Tests', () => {
       body: JSON.stringify(payload),
     }));
 
-    expect(result.is_profitable).toBe(true);
     expect(result.expected_net_benefit).toBe(4480);
-    expect(result.roi_percentage).toBe(111.3);
+    expect(result.roi_pct).toBe(111.3);
   });
 
   it('handles API error responses with standard Error rejection', async () => {
