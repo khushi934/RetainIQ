@@ -36,3 +36,4 @@ echo Press any key in this window to close launcher.
 echo (Server terminal windows will stay open in the background)
 echo ========================================================
 pause >nul
+

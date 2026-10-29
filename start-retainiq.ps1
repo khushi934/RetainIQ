@@ -26,3 +26,4 @@ Start-Process "http://127.0.0.1:5173/login"
 
 Write-Host ""
 Write-Host "Both servers are running in dedicated PowerShell windows." -ForegroundColor Green
+
