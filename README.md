@@ -200,6 +200,13 @@ npm run dev -- --host 127.0.0.1 --port 5173
 ```
 *Web Application will be accessible at: `http://127.0.0.1:5173/`*
 
+#### Option C: Docker Compose (Single Command)
+If you have Docker Desktop installed, launch MySQL 8.0, FastAPI backend, and Nginx frontend in isolated containers:
+```powershell
+docker compose up --build
+```
+*Web Application will be accessible at `http://localhost:5173/`.*
+
 ---
 
 ## Exploring the Platform
