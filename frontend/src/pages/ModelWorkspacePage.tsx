@@ -250,7 +250,7 @@ export const ModelWorkspacePage: React.FC = () => {
               <span className="text-xl font-bold text-slate-700 mt-1 block">
                 {(selectedModel.evaluation_metrics.baseline_churn_rate * 100).toFixed(1)}%
               </span>
-              <span className="text-[10px] text-slate-400">Random dummy model</span>
+              <span className="text-[10px] text-slate-400">Class prevalence baseline</span>
             </div>
           </div>
 
