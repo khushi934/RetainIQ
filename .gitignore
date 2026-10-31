@@ -49,7 +49,8 @@ dist-ssr/
 .DS_Store
 Thumbs.db
 
-# Model artifacts (keep models directory structure, ignore huge binary dumps if generated locally)
+# Model artifacts — joblib files are tracked so Render has the trained model on deploy
+# To exclude large model files from git, use git-lfs instead
 backend/models_storage/*.pkl
-backend/models_storage/*.joblib
+!backend/models_storage/*.joblib
 !backend/models_storage/.gitkeep

@@ -33,7 +33,7 @@ class Settings(BaseSettings):
 
     # LLM configuration (optional)
     LLM_API_KEY: str | None = None
-    LLM_MODEL: str = "gpt-4o-mini"
+    LLM_MODEL: str = "gpt-3.5-turbo"
     LLM_BASE_URL: str = "https://api.openai.com/v1"
 
     model_config = SettingsConfigDict(
