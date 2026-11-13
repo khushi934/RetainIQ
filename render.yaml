@@ -22,3 +22,4 @@ services:
         value: https://api.openai.com/v1
     healthCheckPath: /api/health
     autoDeploy: true
+

@@ -108,11 +108,11 @@ export const SettingsPage: React.FC = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 text-xs">
           <div className="p-3 bg-slate-50 border border-slate-200 rounded-md">
             <span className="text-text-muted font-medium block mb-1">Full Name</span>
-            <span className="font-semibold text-text-primary">{user?.full_name || 'Demo Analyst'}</span>
+            <span className="font-semibold text-text-primary">{user?.full_name || 'Active User'}</span>
           </div>
           <div className="p-3 bg-slate-50 border border-slate-200 rounded-md">
             <span className="text-text-muted font-medium block mb-1">Email Address</span>
-            <span className="font-semibold text-text-primary font-mono">{user?.email || 'demo@retainiq.io'}</span>
+            <span className="font-semibold text-text-primary font-mono">{user?.email || 'user@company.com'}</span>
           </div>
           <div className="p-3 bg-slate-50 border border-slate-200 rounded-md">
             <span className="text-text-muted font-medium block mb-1">Active Role</span>

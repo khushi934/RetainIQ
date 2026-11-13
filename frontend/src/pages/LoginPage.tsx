@@ -28,26 +28,6 @@ export const LoginPage: React.FC = () => {
     }
   };
 
-  const handleDemoLogin = async () => {
-    setEmail('demo@retainiq.io');
-    setPassword('RetainIQ2026!');
-    setError(null);
-    setLoading(true);
-    try {
-      const res = await api.login({ email: 'demo@retainiq.io', password: 'RetainIQ2026!' });
-      localStorage.setItem('retainiq_token', res.access_token);
-      if (res.user.workspaces && res.user.workspaces.length > 0) {
-        localStorage.setItem('retainiq_workspace_id', res.user.workspaces[0].id.toString());
-      }
-      navigate('/app/dashboard');
-    } catch (err: any) {
-      // If demo user wasn't registered yet, navigate directly to dashboard (backend has demo bypass)
-      navigate('/app/dashboard');
-    } finally {
-      setLoading(false);
-    }
-  };
-
   return (
     <div className="min-h-screen bg-[#F8FAFC] flex flex-col justify-center py-12 px-6 sm:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md text-center">
@@ -61,7 +41,7 @@ export const LoginPage: React.FC = () => {
           Sign in to your workspace
         </h2>
         <p className="text-xs text-slate-500 mt-1">
-          Connected to local MySQL Server 8.0 &bull; Database: retainiq_db
+          Connected to MySQL Server &bull; Database: retainiq_db
         </p>
       </div>
 
@@ -73,35 +53,6 @@ export const LoginPage: React.FC = () => {
               <span>{error}</span>
             </div>
           )}
-
-          {/* Quick Demo Access Button */}
-          <div className="mb-6 p-4 bg-slate-50 border border-slate-200 rounded-lg">
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-xs font-bold text-slate-900">Portfolio Evaluation</span>
-              <span className="text-[10px] bg-blue-100 text-blue-800 font-semibold px-2 py-0.5 rounded">Demo User</span>
-            </div>
-            <p className="text-xs text-slate-600 mb-3">
-              One-click access preloaded with the IBM Telco benchmark dataset, trained ML models, and Decision Lab strategies.
-            </p>
-            <button
-              type="button"
-              onClick={handleDemoLogin}
-              disabled={loading}
-              className="w-full py-2 px-3 bg-blue-600 hover:bg-blue-700 text-white rounded-md text-xs font-semibold transition-colors flex items-center justify-center space-x-1.5 shadow-xs"
-            >
-              <span>1-Click Demo Login (Alex Mercer &bull; Lead Analyst)</span>
-              <ArrowRight className="w-3.5 h-3.5" />
-            </button>
-          </div>
-
-          <div className="relative my-4">
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-slate-200" />
-            </div>
-            <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-white px-2 text-slate-400 font-medium">Or enter credentials</span>
-            </div>
-          </div>
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>

@@ -5,9 +5,9 @@ import { api } from '../services/api';
 
 export const Navbar: React.FC = () => {
   const navigate = useNavigate();
-  const [userEmail, setUserEmail] = useState<string>('demo@retainiq.io');
-  const [userName, setUserName] = useState<string>('Alex Mercer');
-  const [workspaceName, setWorkspaceName] = useState<string>('Telecom Enterprise Demo');
+  const [userEmail, setUserEmail] = useState<string>('');
+  const [userName, setUserName] = useState<string>('User');
+  const [workspaceName, setWorkspaceName] = useState<string>('Workspace');
   const [dbStatus, setDbStatus] = useState<{ connected: boolean; version: string }>({ connected: true, version: 'MySQL 8.0' });
 
   useEffect(() => {

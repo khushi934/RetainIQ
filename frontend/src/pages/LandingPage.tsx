@@ -33,10 +33,10 @@ export const LandingPage: React.FC = () => {
             Sign In
           </Link>
           <Link
-            to="/app/dashboard"
+            to="/register"
             className="text-xs font-semibold px-4 py-2 bg-slate-900 text-white rounded-md hover:bg-slate-800 transition-colors shadow-xs flex items-center space-x-1.5"
           >
-            <span>Launch Live App</span>
+            <span>Get Started</span>
             <ArrowRight className="w-3.5 h-3.5" />
           </Link>
         </div>
@@ -60,17 +60,17 @@ export const LandingPage: React.FC = () => {
 
         <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
           <Link
-            to="/app/dashboard"
+            to="/register"
             className="w-full sm:w-auto px-6 py-3 bg-slate-900 hover:bg-slate-800 text-white font-semibold rounded-lg shadow-sm transition-all flex items-center justify-center space-x-2 text-sm"
           >
-            <span>Open Demo Workspace</span>
+            <span>Get Started</span>
             <ArrowRight className="w-4 h-4" />
           </Link>
           <Link
-            to="/app/methodology"
+            to="/login"
             className="w-full sm:w-auto px-6 py-3 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 font-semibold rounded-lg transition-colors text-sm"
           >
-            Review Methodology & Limitations
+            Sign In to Workspace
           </Link>
         </div>
 
