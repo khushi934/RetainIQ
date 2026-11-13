@@ -47,9 +47,6 @@ export const RegisterPage: React.FC = () => {
         <h2 className="text-2xl font-bold text-slate-900 tracking-tight">
           Create an intelligence workspace
         </h2>
-        <p className="text-xs text-slate-500 mt-1">
-          Each account provisions an isolated tenant backed strictly by MySQL
-        </p>
       </div>
 
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
