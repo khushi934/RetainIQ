@@ -1,31 +1,25 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { Database, ShieldCheck, User, LogOut, ChevronDown, Sparkles } from 'lucide-react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { Menu, LogOut, ChevronDown, User as UserIcon } from 'lucide-react';
 import { api } from '../services/api';
 
-export const Navbar: React.FC = () => {
+interface NavbarProps {
+  onToggleMobileSidebar?: () => void;
+}
+
+export const Navbar: React.FC<NavbarProps> = ({ onToggleMobileSidebar }) => {
+  const location = useLocation();
   const navigate = useNavigate();
+  const [userName, setUserName] = useState<string>('Analyst');
   const [userEmail, setUserEmail] = useState<string>('');
-  const [userName, setUserName] = useState<string>('User');
-  const [workspaceName, setWorkspaceName] = useState<string>('Workspace');
-  const [dbStatus, setDbStatus] = useState<{ connected: boolean; version: string }>({ connected: true, version: 'MySQL 8.0' });
+  const [workspaceName, setWorkspaceName] = useState<string>('Primary Workspace');
+  const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
-    api.checkHealth()
-      .then(res => {
-        if (res.database) {
-          setDbStatus({
-            connected: res.database.connected,
-            version: res.database.mysql_version ? `MySQL ${res.database.mysql_version.split('-')[0]}` : 'MySQL 8.0'
-          });
-        }
-      })
-      .catch(() => {});
-
     api.getMe()
-      .then(u => {
-        setUserEmail(u.email);
-        setUserName(u.full_name);
+      .then((u) => {
+        if (u.full_name) setUserName(u.full_name);
+        if (u.email) setUserEmail(u.email);
         if (u.workspaces && u.workspaces.length > 0) {
           setWorkspaceName(u.workspaces[0].name);
         }
@@ -39,59 +33,97 @@ export const Navbar: React.FC = () => {
     navigate('/login');
   };
 
-  return (
-    <header className="h-16 bg-white border-b border-slate-200 px-6 flex items-center justify-between z-20 sticky top-0">
-      <div className="flex items-center space-x-6">
-        <Link to="/app/dashboard" className="flex items-center space-x-2.5">
-          <div className="w-8 h-8 rounded-lg bg-slate-900 flex items-center justify-center text-white font-bold text-sm shadow-sm">
-            RQ
-          </div>
-          <div className="flex flex-col">
-            <span className="font-bold text-slate-900 text-base tracking-tight leading-none">
-              RetainIQ
-            </span>
-            <span className="text-[10px] text-slate-500 font-medium tracking-wide uppercase mt-0.5">
-              Customer Retention Intelligence
-            </span>
-          </div>
-        </Link>
+  // Derive readable breadcrumb from route
+  const getBreadcrumb = () => {
+    const p = location.pathname;
+    if (p.includes('/dashboard')) return 'Overview';
+    if (p.includes('/customers')) return 'Customers';
+    if (p.includes('/import')) return 'Data Imports';
+    if (p.includes('/quality')) return 'Data Quality';
+    if (p.includes('/segments')) return 'Customer Segments';
+    if (p.includes('/models')) return 'Churn Prediction';
+    if (p.includes('/investigator')) return 'Churn Investigator';
+    if (p.includes('/decision-lab')) return 'Retention Decision Lab';
+    if (p.includes('/campaigns')) return 'Campaigns';
+    if (p.includes('/assistant')) return 'AI Analyst';
+    if (p.includes('/reports')) return 'Reports';
+    if (p.includes('/settings')) return 'Settings';
+    if (p.includes('/methodology')) return 'Methodology';
+    return 'Dashboard';
+  };
 
-        <div className="hidden md:flex items-center space-x-2 pl-4 border-l border-slate-200">
-          <span className="text-xs font-medium text-slate-500">Workspace:</span>
-          <div className="flex items-center space-x-1 px-2.5 py-1 bg-slate-50 border border-slate-200 rounded-md text-xs font-semibold text-slate-700">
-            <span>{workspaceName}</span>
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 ml-1"></span>
-          </div>
+  return (
+    <header className="h-14 bg-white border-b border-[#E6E8EC] px-4 md:px-6 flex items-center justify-between sticky top-0 z-20">
+      <div className="flex items-center space-x-3">
+        {onToggleMobileSidebar && (
+          <button
+            onClick={onToggleMobileSidebar}
+            className="md:hidden p-1.5 text-[#697386] hover:text-[#20242C] rounded-md hover:bg-[#F7F8FA]"
+            aria-label="Open navigation menu"
+          >
+            <Menu className="w-5 h-5" />
+          </button>
+        )}
+
+        {/* Breadcrumb / Page Title */}
+        <div className="flex items-center space-x-2 text-[13px]">
+          <span className="text-[#697386] hidden sm:inline">Workspace</span>
+          <span className="text-[#E6E8EC] hidden sm:inline">/</span>
+          <span className="font-semibold text-[#20242C]">{getBreadcrumb()}</span>
         </div>
       </div>
 
-      <div className="flex items-center space-x-4">
-        {/* MySQL Architecture Indicator (Strict Rule compliance display) */}
-        <div className="hidden sm:flex items-center space-x-1.5 px-2.5 py-1 bg-blue-50/80 border border-blue-200/80 rounded-md text-xs font-medium text-blue-800">
-          <Database className="w-3.5 h-3.5 text-blue-700" />
-          <span>{dbStatus.version}</span>
-          <span className="text-blue-500 text-[10px]">Strict Persistence</span>
+      <div className="flex items-center space-x-3">
+        {/* Workspace Selector Badge */}
+        <div className="flex items-center space-x-1.5 px-2.5 py-1 bg-[#F7F8FA] border border-[#E6E8EC] rounded-md text-[12px] font-medium text-[#20242C]">
+          <span className="w-1.5 h-1.5 rounded-full bg-[#3E8B69]"></span>
+          <span className="max-w-[140px] truncate">{workspaceName}</span>
         </div>
 
-        {/* User menu */}
-        <div className="flex items-center space-x-3 pl-3 border-l border-slate-200">
-          <div className="flex items-center space-x-2">
-            <div className="w-7 h-7 rounded-full bg-slate-100 border border-slate-300 flex items-center justify-center text-xs font-medium text-slate-700">
-              {userName.charAt(0)}
-            </div>
-            <div className="hidden lg:flex flex-col text-left">
-              <span className="text-xs font-medium text-slate-800 leading-none">{userName}</span>
-              <span className="text-[10px] text-slate-400 mt-0.5">{userEmail}</span>
-            </div>
-          </div>
-
+        {/* User Profile Menu */}
+        <div className="relative">
           <button
-            onClick={handleLogout}
-            title="Log out"
-            className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-md transition-colors"
+            onClick={() => setMenuOpen(!menuOpen)}
+            className="flex items-center space-x-2 p-1 pl-2 text-[13px] font-medium text-[#20242C] hover:bg-[#F7F8FA] rounded-md transition-colors"
           >
-            <LogOut className="w-4 h-4" />
+            <div className="w-6 h-6 rounded-full bg-[#E6E8EC] text-[#20242C] flex items-center justify-center text-[11px] font-semibold">
+              {userName.charAt(0).toUpperCase()}
+            </div>
+            <span className="hidden sm:inline text-[#20242C] text-[13px]">{userName}</span>
+            <ChevronDown className="w-3.5 h-3.5 text-[#697386]" />
           </button>
+
+          {menuOpen && (
+            <>
+              <div
+                className="fixed inset-0 z-30"
+                onClick={() => setMenuOpen(false)}
+              />
+              <div className="absolute right-0 mt-1.5 w-56 bg-white border border-[#E6E8EC] rounded-lg shadow-dropdown p-1.5 z-40 text-xs">
+                <div className="px-3 py-2 border-b border-[#E6E8EC] mb-1">
+                  <div className="font-medium text-[#20242C]">{userName}</div>
+                  <div className="text-[11px] text-[#697386] truncate mt-0.5">{userEmail || 'Active Analyst'}</div>
+                </div>
+                <button
+                  onClick={() => {
+                    setMenuOpen(false);
+                    navigate('/app/settings');
+                  }}
+                  className="w-full text-left px-3 py-1.5 text-[#20242C] hover:bg-[#F7F8FA] rounded-md transition-colors flex items-center space-x-2"
+                >
+                  <UserIcon className="w-3.5 h-3.5 text-[#697386]" />
+                  <span>Account & Settings</span>
+                </button>
+                <button
+                  onClick={handleLogout}
+                  className="w-full text-left px-3 py-1.5 text-[#C75B58] hover:bg-[#FBF2F2] rounded-md transition-colors flex items-center space-x-2 mt-0.5"
+                >
+                  <LogOut className="w-3.5 h-3.5" />
+                  <span>Sign out</span>
+                </button>
+              </div>
+            </>
+          )}
         </div>
       </div>
     </header>

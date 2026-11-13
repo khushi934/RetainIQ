@@ -3,90 +3,90 @@ import { BookOpen, AlertTriangle, ShieldCheck, Calculator, Activity, HelpCircle 
 
 export const HelpMethodologyPage: React.FC = () => {
   return (
-    <div className="space-y-8 max-w-4xl">
+    <div className="space-y-6 max-w-4xl">
       {/* Header */}
-      <div className="pb-4 border-b border-border">
-        <div className="flex items-center gap-3 mb-2">
-          <div className="p-2 bg-brand/10 text-brand rounded-lg">
-            <BookOpen className="w-6 h-6" />
+      <div className="pb-4 border-b border-[#E6E8EC]">
+        <div className="flex items-center gap-3">
+          <div className="p-2 bg-[#315E81]/10 text-[#315E81] rounded-lg">
+            <BookOpen className="w-5 h-5" />
           </div>
           <div>
-            <h1 className="text-2xl font-bold text-text-primary tracking-tight">Methodology & Decision Science Guide</h1>
-            <p className="text-sm text-text-secondary">
-              Official mathematical formulations, data classification framework, and causal decision science caveats for RetainIQ.
+            <h1 className="text-2xl font-semibold text-[#20242C] tracking-tight">Methodology & Decision Science</h1>
+            <p className="text-sm text-[#697386] mt-0.5">
+              Mathematical formulations, analytical classification framework, and causal decision caveats.
             </p>
           </div>
         </div>
       </div>
 
       {/* The 6-Layer Epistemological Framework */}
-      <section className="bg-surface rounded-lg border border-border p-6 shadow-sm space-y-4">
-        <div className="flex items-center gap-2 pb-3 border-b border-border">
-          <ShieldCheck className="w-5 h-5 text-brand" />
-          <h2 className="text-lg font-bold text-text-primary">1. The 6-Layer Epistemological Framework</h2>
+      <section className="bg-white rounded-lg border border-[#E6E8EC] p-6 shadow-xs space-y-4">
+        <div className="flex items-center gap-2.5 pb-3 border-b border-[#E6E8EC]">
+          <ShieldCheck className="w-5 h-5 text-[#315E81]" />
+          <h2 className="text-base font-semibold text-[#20242C]">1. The 6-Layer Epistemological Framework</h2>
         </div>
 
-        <p className="text-sm text-text-secondary leading-relaxed">
+        <p className="text-sm text-[#697386] leading-relaxed">
           RetainIQ enforces a strict separation between observed facts, mathematical summaries, algorithmic forecasts, user assumptions, and hypothetical business simulations. Users must never confuse a model prediction or simulation with guaranteed reality:
         </p>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs pt-2">
-          <div className="p-3 bg-slate-50 border border-slate-200 rounded-md">
-            <div className="font-bold text-text-primary flex items-center gap-1.5 mb-1">
-              <span className="w-2 h-2 rounded-full bg-slate-500"></span>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs pt-1">
+          <div className="p-3.5 bg-[#F7F8FA] border border-[#E6E8EC] rounded-md">
+            <div className="font-semibold text-[#20242C] flex items-center gap-2 mb-1.5">
+              <span className="w-2 h-2 rounded-full bg-[#697386]"></span>
               Layer 1: Observed Historical Data
             </div>
-            <p className="text-text-muted">
+            <p className="text-[#697386] leading-relaxed">
               Raw customer attributes, contract types, tenure months, and logged subscription cancellations recorded in MySQL.
             </p>
           </div>
 
-          <div className="p-3 bg-blue-50 border border-blue-200 rounded-md">
-            <div className="font-bold text-blue-900 flex items-center gap-1.5 mb-1">
-              <span className="w-2 h-2 rounded-full bg-blue-500"></span>
+          <div className="p-3.5 bg-[#F7F8FA] border border-[#E6E8EC] rounded-md">
+            <div className="font-semibold text-[#315E81] flex items-center gap-2 mb-1.5">
+              <span className="w-2 h-2 rounded-full bg-[#315E81]"></span>
               Layer 2: SQL-Calculated Metrics
             </div>
-            <p className="text-blue-800">
+            <p className="text-[#697386] leading-relaxed">
               Deterministic aggregations computed directly by MySQL queries (e.g. churn cohort rates, segment averages, total revenue).
             </p>
           </div>
 
-          <div className="p-3 bg-purple-50 border border-purple-200 rounded-md">
-            <div className="font-bold text-purple-900 flex items-center gap-1.5 mb-1">
-              <span className="w-2 h-2 rounded-full bg-purple-500"></span>
+          <div className="p-3.5 bg-[#F7F8FA] border border-[#E6E8EC] rounded-md">
+            <div className="font-semibold text-[#438A83] flex items-center gap-2 mb-1.5">
+              <span className="w-2 h-2 rounded-full bg-[#438A83]"></span>
               Layer 3: Machine Learning Predictions
             </div>
-            <p className="text-purple-800">
+            <p className="text-[#697386] leading-relaxed">
               Estimated statistical probabilities generated by Scikit-learn classification models. These are probabilities, not certainties.
             </p>
           </div>
 
-          <div className="p-3 bg-amber-50 border border-amber-200 rounded-md">
-            <div className="font-bold text-amber-900 flex items-center gap-1.5 mb-1">
-              <span className="w-2 h-2 rounded-full bg-amber-500"></span>
+          <div className="p-3.5 bg-[#F7F8FA] border border-[#E6E8EC] rounded-md">
+            <div className="font-semibold text-[#D69A37] flex items-center gap-2 mb-1.5">
+              <span className="w-2 h-2 rounded-full bg-[#D69A37]"></span>
               Layer 4: User-Defined Assumptions
             </div>
-            <p className="text-amber-800">
+            <p className="text-[#697386] leading-relaxed">
               Hypothetical business inputs configured in the Retention Decision Lab (e.g. assumed contact cost, discount amount, assumed uplift).
             </p>
           </div>
 
-          <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-md">
-            <div className="font-bold text-emerald-900 flex items-center gap-1.5 mb-1">
-              <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
+          <div className="p-3.5 bg-[#F7F8FA] border border-[#E6E8EC] rounded-md">
+            <div className="font-semibold text-[#3E8B69] flex items-center gap-2 mb-1.5">
+              <span className="w-2 h-2 rounded-full bg-[#3E8B69]"></span>
               Layer 5: Simulated Outcomes
             </div>
-            <p className="text-emerald-800">
+            <p className="text-[#697386] leading-relaxed">
               Mathematical projections of net revenue, cost, and retained customers derived under the explicit conditions of Layer 4.
             </p>
           </div>
 
-          <div className="p-3 bg-teal-50 border border-teal-200 rounded-md">
-            <div className="font-bold text-teal-900 flex items-center gap-1.5 mb-1">
-              <span className="w-2 h-2 rounded-full bg-teal-500"></span>
+          <div className="p-3.5 bg-[#F7F8FA] border border-[#E6E8EC] rounded-md">
+            <div className="font-semibold text-[#315E81] flex items-center gap-2 mb-1.5">
+              <span className="w-2 h-2 rounded-full bg-[#315E81]"></span>
               Layer 6: AI-Generated Explanations
             </div>
-            <p className="text-teal-800">
+            <p className="text-[#697386] leading-relaxed">
               Natural language syntheses produced by RetainIQ Analyst grounded strictly in pre-calculated metrics from Layers 1-5.
             </p>
           </div>
@@ -94,39 +94,39 @@ export const HelpMethodologyPage: React.FC = () => {
       </section>
 
       {/* SQL Analytics Formulations */}
-      <section className="bg-surface rounded-lg border border-border p-6 shadow-sm space-y-4">
-        <div className="flex items-center gap-2 pb-3 border-b border-border">
-          <Calculator className="w-5 h-5 text-brand" />
-          <h2 className="text-lg font-bold text-text-primary">2. SQL Analytics Metric Formulations</h2>
+      <section className="bg-white rounded-lg border border-[#E6E8EC] p-6 shadow-xs space-y-4">
+        <div className="flex items-center gap-2.5 pb-3 border-b border-[#E6E8EC]">
+          <Calculator className="w-5 h-5 text-[#315E81]" />
+          <h2 className="text-base font-semibold text-[#20242C]">2. SQL Analytics Metric Formulations</h2>
         </div>
 
         <div className="space-y-4 text-xs">
-          <div className="border border-border rounded-md p-4">
-            <h3 className="font-bold text-text-primary text-sm mb-1">Observed Churn Rate</h3>
-            <p className="text-text-muted mb-2">
+          <div className="border border-[#E6E8EC] rounded-md p-4 bg-[#F7F8FA]">
+            <h3 className="font-semibold text-[#20242C] text-sm mb-1">Observed Churn Rate</h3>
+            <p className="text-[#697386] mb-2 leading-relaxed">
               The proportion of customers within an eligible cohort who have permanently cancelled service during the measured period:
             </p>
-            <div className="bg-slate-900 text-slate-100 p-3 rounded font-mono text-xs">
+            <div className="bg-[#20242C] text-slate-100 p-3 rounded font-mono text-xs overflow-x-auto">
               Observed Churn Rate = ( COUNT(customers WHERE churn_label = 1) / COUNT(total_customers) ) × 100
             </div>
           </div>
 
-          <div className="border border-border rounded-md p-4">
-            <h3 className="font-bold text-text-primary text-sm mb-1">Observed Retention Rate</h3>
-            <p className="text-text-muted mb-2">
+          <div className="border border-[#E6E8EC] rounded-md p-4 bg-[#F7F8FA]">
+            <h3 className="font-semibold text-[#20242C] text-sm mb-1">Observed Retention Rate</h3>
+            <p className="text-[#697386] mb-2 leading-relaxed">
               The reciprocal cohort metric reflecting customers maintaining active status:
             </p>
-            <div className="bg-slate-900 text-slate-100 p-3 rounded font-mono text-xs">
+            <div className="bg-[#20242C] text-slate-100 p-3 rounded font-mono text-xs overflow-x-auto">
               Retention Rate = 100% - Observed Churn Rate = ( COUNT(churn_label = 0) / COUNT(total_customers) ) × 100
             </div>
           </div>
 
-          <div className="border border-border rounded-md p-4">
-            <h3 className="font-bold text-text-primary text-sm mb-1">Monthly Revenue at Risk (MRR at Risk)</h3>
-            <p className="text-text-muted mb-2">
+          <div className="border border-[#E6E8EC] rounded-md p-4 bg-[#F7F8FA]">
+            <h3 className="font-semibold text-[#20242C] text-sm mb-1">Monthly Revenue at Risk (MRR at Risk)</h3>
+            <p className="text-[#697386] mb-2 leading-relaxed">
               The total recurring monthly revenue contributed by currently active customers whose predicted churn probability falls into the High Risk tier (≥ 0.60):
             </p>
-            <div className="bg-slate-900 text-slate-100 p-3 rounded font-mono text-xs">
+            <div className="bg-[#20242C] text-slate-100 p-3 rounded font-mono text-xs overflow-x-auto">
               Revenue at Risk = SUM( monthly_charges ) FOR active customers WHERE predicted_churn_probability ≥ 0.60
             </div>
           </div>
@@ -134,50 +134,54 @@ export const HelpMethodologyPage: React.FC = () => {
       </section>
 
       {/* Machine Learning Pipeline */}
-      <section className="bg-surface rounded-lg border border-border p-6 shadow-sm space-y-4">
-        <div className="flex items-center gap-2 pb-3 border-b border-border">
-          <Activity className="w-5 h-5 text-brand" />
-          <h2 className="text-lg font-bold text-text-primary">3. Machine Learning Churn Pipeline</h2>
+      <section className="bg-white rounded-lg border border-[#E6E8EC] p-6 shadow-xs space-y-4">
+        <div className="flex items-center gap-2.5 pb-3 border-b border-[#E6E8EC]">
+          <Activity className="w-5 h-5 text-[#315E81]" />
+          <h2 className="text-base font-semibold text-[#20242C]">3. Machine Learning Churn Pipeline</h2>
         </div>
 
-        <div className="space-y-3 text-xs text-text-secondary leading-relaxed">
+        <div className="space-y-3 text-xs text-[#697386] leading-relaxed">
           <p>
             RetainIQ uses standard Scikit-learn classification algorithms (Random Forest and Logistic Regression) trained exclusively on non-leaking customer attributes.
           </p>
 
-          <div className="p-3 bg-red-50 border border-red-200 rounded-md text-red-900">
-            <span className="font-bold block mb-1">Data Leakage Prevention:</span>
-            Attributes such as <code className="font-mono text-red-800">subscription_status</code>, <code className="font-mono text-red-800">churn_date</code>, and arbitrary identifiers are strictly removed prior to feature vectorization. Preprocessing transformers (imputers, one-hot encoders, standard scalers) are fit exclusively on the training split (80%) and transformed on the holdout test set (20%) to eliminate data leakage.
+          <div className="p-3.5 bg-[#C75B58]/10 border border-[#C75B58]/25 rounded-md text-[#8B2E2B]">
+            <span className="font-semibold block mb-1 text-[#20242C]">Data Leakage Prevention:</span>
+            Attributes such as <code className="font-mono text-[#8B2E2B]">subscription_status</code>, <code className="font-mono text-[#8B2E2B]">churn_date</code>, and arbitrary identifiers are strictly removed prior to feature vectorization. Preprocessing transformers (imputers, one-hot encoders, standard scalers) are fit exclusively on the training split (80%) and transformed on the holdout test set (20%) to eliminate data leakage.
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2">
-            <div className="p-3 border border-border rounded-md">
-              <span className="font-bold text-text-primary block">ROC-AUC</span>
-              <p className="text-text-muted text-[11px] mt-1">Measures discrimination capability across all classification thresholds.</p>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1">
+            <div className="p-3 bg-[#F7F8FA] border border-[#E6E8EC] rounded-md">
+              <span className="font-semibold text-[#20242C] block">ROC-AUC</span>
+              <p className="text-[#697386] text-[11px] mt-1">Measures discrimination capability across all classification thresholds.</p>
             </div>
-            <div className="p-3 border border-border rounded-md">
-              <span className="font-bold text-text-primary block">Precision & Recall</span>
-              <p className="text-text-muted text-[11px] mt-1">Evaluates true positive capture versus false alarm costs on imbalanced cohorts.</p>
+            <div className="p-3 bg-[#F7F8FA] border border-[#E6E8EC] rounded-md">
+              <span className="font-semibold text-[#20242C] block">Precision & Recall</span>
+              <p className="text-[#697386] text-[11px] mt-1">Evaluates true positive capture versus false alarm costs on imbalanced cohorts.</p>
             </div>
-            <div className="p-3 border border-border rounded-md">
-              <span className="font-bold text-text-primary block">Risk Categorization</span>
-              <p className="text-text-muted text-[11px] mt-1">High Risk: P ≥ 0.60<br />Medium Risk: 0.35 ≤ P &lt; 0.60<br />Low Risk: P &lt; 0.35</p>
+            <div className="p-3 bg-[#F7F8FA] border border-[#E6E8EC] rounded-md">
+              <span className="font-semibold text-[#20242C] block">Risk Categorization</span>
+              <p className="text-[#697386] text-[11px] mt-1">
+                <span className="text-[#C75B58] font-medium">High Risk:</span> P ≥ 0.60<br />
+                <span className="text-[#D69A37] font-medium">Medium Risk:</span> 0.35 ≤ P &lt; 0.60<br />
+                <span className="text-[#3E8B69] font-medium">Low Risk:</span> P &lt; 0.35
+              </p>
             </div>
           </div>
         </div>
       </section>
 
       {/* Retention Decision Lab Methodology */}
-      <section className="bg-surface rounded-lg border border-border p-6 shadow-sm space-y-4">
-        <div className="flex items-center gap-2 pb-3 border-b border-border">
-          <HelpCircle className="w-5 h-5 text-brand" />
-          <h2 className="text-lg font-bold text-text-primary">4. Retention Decision Lab Methodology & Formulas</h2>
+      <section className="bg-white rounded-lg border border-[#E6E8EC] p-6 shadow-xs space-y-4">
+        <div className="flex items-center gap-2.5 pb-3 border-b border-[#E6E8EC]">
+          <HelpCircle className="w-5 h-5 text-[#315E81]" />
+          <h2 className="text-base font-semibold text-[#20242C]">4. Retention Decision Lab Methodology & Formulas</h2>
         </div>
 
         <div className="space-y-4 text-xs">
-          <div className="border border-border rounded-md p-4 space-y-2">
-            <h3 className="font-bold text-text-primary text-sm">Campaign Sizing & Costs</h3>
-            <div className="bg-slate-900 text-slate-100 p-3 rounded font-mono text-xs space-y-1">
+          <div className="border border-[#E6E8EC] rounded-md p-4 space-y-2 bg-[#F7F8FA]">
+            <h3 className="font-semibold text-[#20242C] text-sm">Campaign Sizing & Costs</h3>
+            <div className="bg-[#20242C] text-slate-100 p-3 rounded font-mono text-xs space-y-1">
               <div>Cost Per Customer = contact_cost + discount_amount</div>
               <div>Budget Cap = FLOOR( budget / Cost Per Customer )</div>
               <div>Targeted Customers = MIN( eligible_count, campaign_capacity, Budget Cap )</div>
@@ -185,9 +189,9 @@ export const HelpMethodologyPage: React.FC = () => {
             </div>
           </div>
 
-          <div className="border border-border rounded-md p-4 space-y-2">
-            <h3 className="font-bold text-text-primary text-sm">Incremental Retention & Net Benefit</h3>
-            <div className="bg-slate-900 text-slate-100 p-3 rounded font-mono text-xs space-y-1">
+          <div className="border border-[#E6E8EC] rounded-md p-4 space-y-2 bg-[#F7F8FA]">
+            <h3 className="font-semibold text-[#20242C] text-sm">Incremental Retention & Net Benefit</h3>
+            <div className="bg-[#20242C] text-slate-100 p-3 rounded font-mono text-xs space-y-1">
               <div>Incremental Retained Customers = Targeted Customers × assumed_retention_uplift</div>
               <div>Incremental Revenue = Incremental Retained Customers × revenue_per_retained_customer</div>
               <div>Expected Net Benefit = Incremental Revenue - Total Campaign Cost</div>
@@ -197,14 +201,14 @@ export const HelpMethodologyPage: React.FC = () => {
           </div>
 
           {/* Scientific Caveat Warning */}
-          <div className="p-4 bg-amber-50 border border-amber-200 rounded-md flex items-start gap-3">
-            <AlertTriangle className="w-5 h-5 text-amber-700 shrink-0 mt-0.5" />
-            <div className="text-xs text-amber-900 space-y-1">
-              <span className="font-bold">Causal Decision Science Caveat:</span>
-              <p>
+          <div className="p-4 bg-[#D69A37]/10 border border-[#D69A37]/30 rounded-md flex items-start gap-3">
+            <AlertTriangle className="w-5 h-5 text-[#D69A37] shrink-0 mt-0.5" />
+            <div className="text-xs text-[#855B14] space-y-1">
+              <span className="font-semibold text-[#20242C]">Causal Decision Science Caveat:</span>
+              <p className="text-[#697386] leading-relaxed">
                 Correlation does not equal causation. An assumed response rate or retention uplift entered by a user is an analytical hypothesis, not empirical proof. Historical correlation between discounts and tenure does not guarantee that offering a discount will cause a given customer to stay.
               </p>
-              <p className="mt-1">
+              <p className="mt-1 text-[#697386] leading-relaxed">
                 To validate causal uplift in production, businesses should execute randomized controlled trials (A/B testing) comparing an outreach cohort against an identical uncontacted holdout control group.
               </p>
             </div>

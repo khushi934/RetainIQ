@@ -3,15 +3,13 @@ import {
   Search,
   Plus,
   CheckCircle2,
-  AlertCircle,
   FileText,
   Clock,
-  BadgeAlert,
   ChevronRight,
-  ShieldCheck
+  Info
 } from 'lucide-react';
 import { api } from '../services/api';
-import { Investigation, InvestigationFinding } from '../types';
+import { Investigation } from '../types';
 
 export const ChurnInvestigatorPage: React.FC = () => {
   const [investigations, setInvestigations] = useState<Investigation[]>([]);
@@ -55,8 +53,8 @@ export const ChurnInvestigatorPage: React.FC = () => {
         findings: [
           {
             finding_type: 'metric_anomaly',
-            title: 'Elevated Initial Churn Observed',
-            summary: 'Initial analysis of 1,000 customers reveals month-to-month contracts experience disproportionate departure rates.',
+            title: 'Elevated Contract Churn Vulnerability',
+            summary: 'Analysis of customer records reveals month-to-month contracts experience significantly higher churn rates.',
             confidence_level: 'high'
           }
         ]
@@ -81,7 +79,6 @@ export const ChurnInvestigatorPage: React.FC = () => {
         summary: findingSummary,
         confidence_level: confidence
       });
-      // reload
       const updated = await api.getInvestigations();
       setInvestigations(updated);
       const reselected = updated.find(i => i.id === selectedInv.id) || updated[0];
@@ -98,103 +95,101 @@ export const ChurnInvestigatorPage: React.FC = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-xl md:text-2xl font-bold text-slate-900 tracking-tight">
+          <h1 className="text-[26px] font-semibold text-[#20242C] tracking-tight">
             Churn Investigator
           </h1>
-          <p className="text-xs text-slate-500 mt-1">
-            Empirical investigation logs, hypotheses testing, and data-backed findings
+          <p className="text-[14px] text-[#697386] mt-1">
+            Segment-level analytical investigations connecting customer attributes to observed churn behavior.
           </p>
         </div>
 
         <button
           onClick={() => setShowCreateModal(true)}
-          className="px-3.5 py-2 bg-slate-900 hover:bg-slate-800 text-white rounded-md text-xs font-semibold shadow-xs flex items-center space-x-1.5 transition-colors"
+          className="px-3.5 py-2 bg-[#315E81] hover:bg-[#274b68] text-white rounded-md text-[13px] font-medium transition-colors flex items-center space-x-1.5 shadow-card self-start"
         >
           <Plus className="w-4 h-4" />
           <span>New Investigation</span>
         </button>
       </div>
 
-      {/* Main Grid: Investigation List & Findings Drilldown */}
+      {/* Main 2-Column Analytical Layout */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        {/* Left Column: Investigation Index */}
-        <div className="lg:col-span-4 bg-white border border-slate-200 rounded-xl p-4 shadow-xs space-y-2">
-          <div className="text-xs font-bold text-slate-400 uppercase tracking-wide px-2 mb-2">
-            Active Case Files ({investigations.length})
+        {/* Left Column: Investigation List */}
+        <div className="lg:col-span-4 bg-white border border-[#E6E8EC] rounded-lg p-4 space-y-2">
+          <div className="text-[13px] font-medium text-[#20242C] px-2 pb-2 border-b border-[#E6E8EC]">
+            Active Investigations ({investigations.length})
           </div>
 
-          {investigations.length === 0 ? (
-            <div className="text-center py-10 text-xs text-slate-400">
-              No investigations created yet.
-            </div>
-          ) : (
-            investigations.map((inv) => (
+          <div className="space-y-1">
+            {investigations.map((inv) => (
               <button
                 key={inv.id}
                 onClick={() => setSelectedInv(inv)}
-                className={`w-full text-left p-3 rounded-lg border transition-all ${
+                className={`w-full text-left p-3 rounded-md transition-colors ${
                   selectedInv?.id === inv.id
-                    ? 'bg-slate-900 text-white border-slate-900 shadow-xs'
-                    : 'bg-slate-50 hover:bg-slate-100 border-slate-200 text-slate-800'
+                    ? 'bg-[#F7F8FA] border border-[#E6E8EC]'
+                    : 'hover:bg-[#F7F8FA] border border-transparent'
                 }`}
               >
-                <div className="flex items-center justify-between">
-                  <span className={`text-[10px] uppercase font-bold px-1.5 py-0.5 rounded ${selectedInv?.id === inv.id ? 'bg-slate-800 text-blue-300' : 'bg-slate-200 text-slate-600'}`}>
-                    {inv.status}
-                  </span>
-                  <span className={`text-[10px] ${selectedInv?.id === inv.id ? 'text-slate-400' : 'text-slate-400'}`}>
-                    {new Date(inv.created_at).toLocaleDateString()}
-                  </span>
-                </div>
-                <div className="font-bold text-xs mt-2 truncate">
+                <div className="text-[13px] font-semibold text-[#20242C] truncate">
                   {inv.title}
                 </div>
-                <div className={`text-[11px] mt-1 truncate ${selectedInv?.id === inv.id ? 'text-slate-300' : 'text-slate-500'}`}>
-                  Segment: {inv.target_segment || 'General Base'}
+                <div className="text-[11px] text-[#697386] mt-0.5">
+                  Segment: {inv.target_segment} &bull; {inv.findings.length} findings
                 </div>
               </button>
-            ))
-          )}
+            ))}
+            {investigations.length === 0 && !loading && (
+              <div className="p-6 text-center text-[12px] text-[#697386]">
+                No investigations yet. Click "New Investigation" above to begin.
+              </div>
+            )}
+          </div>
         </div>
 
-        {/* Right Column: Case File Evidence & Findings */}
-        <div className="lg:col-span-8 space-y-5">
+        {/* Right Column: Findings & Empirical Details */}
+        <div className="lg:col-span-8 bg-white border border-[#E6E8EC] rounded-lg p-6 space-y-6">
           {selectedInv ? (
-            <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-xs space-y-6">
-              <div className="border-b border-slate-100 pb-4">
-                <div className="flex items-center space-x-2 text-xs text-slate-400">
-                  <span>Case #{selectedInv.id}</span>
-                  <span>&bull;</span>
-                  <span>Target: {selectedInv.target_segment}</span>
+            <>
+              <div className="border-b border-[#E6E8EC] pb-4">
+                <div className="flex items-center justify-between">
+                  <h2 className="text-[18px] font-semibold text-[#20242C]">
+                    {selectedInv.title}
+                  </h2>
+                  <span className="text-[11px] font-medium px-2 py-0.5 rounded border bg-[#F0F7F3] text-[#3E8B69] border-[#D4EADB]">
+                    {selectedInv.status.toUpperCase()}
+                  </span>
                 </div>
-                <h2 className="text-lg font-bold text-slate-900 mt-1">
-                  {selectedInv.title}
-                </h2>
-                {selectedInv.description && (
-                  <p className="text-xs text-slate-600 mt-1.5 leading-relaxed">
-                    {selectedInv.description}
-                  </p>
-                )}
+                <p className="text-[13px] text-[#697386] mt-1.5 leading-relaxed">
+                  {selectedInv.description || 'Investigation into cohort behavioral characteristics and retention factors.'}
+                </p>
+                <div className="mt-3 text-[12px] text-[#697386]">
+                  Target Population: <span className="font-medium text-[#20242C]">{selectedInv.target_segment}</span>
+                </div>
               </div>
 
               {/* Verified Empirical Findings */}
-              <div>
-                <h3 className="text-xs font-bold text-slate-900 uppercase tracking-wide mb-3 flex items-center space-x-1.5">
-                  <ShieldCheck className="w-4 h-4 text-emerald-600" />
-                  <span>Documented Findings & Evidence ({selectedInv.findings.length})</span>
+              <div className="space-y-3">
+                <h3 className="text-[14px] font-semibold text-[#20242C]">
+                  Documented Evidence Findings ({selectedInv.findings.length})
                 </h3>
 
                 <div className="space-y-3">
-                  {selectedInv.findings.map((finding) => (
-                    <div key={finding.id} className="p-4 bg-slate-50 border border-slate-200 rounded-lg space-y-1.5">
+                  {selectedInv.findings.map((f, idx) => (
+                    <div
+                      key={f.id || idx}
+                      className="p-4 bg-[#F7F8FA] border border-[#E6E8EC] rounded-md space-y-2"
+                    >
                       <div className="flex items-center justify-between">
-                        <span className="font-bold text-xs text-slate-900">{finding.title}</span>
-                        <span className="text-[10px] font-semibold uppercase px-2 py-0.5 rounded bg-blue-100 text-blue-800">
-                          {finding.confidence_level} Confidence
+                        <span className="text-[13px] font-semibold text-[#20242C]">
+                          {f.title}
+                        </span>
+                        <span className="text-[11px] font-mono font-medium px-2 py-0.5 rounded border bg-white border-[#E6E8EC] text-[#697386]">
+                          {f.confidence_level} confidence
                         </span>
                       </div>
-                      <p className="text-xs text-slate-600 leading-relaxed">
-                        {finding.summary}
+                      <p className="text-[12px] text-[#697386] leading-relaxed">
+                        {f.summary}
                       </p>
                     </div>
                   ))}
@@ -202,113 +197,123 @@ export const ChurnInvestigatorPage: React.FC = () => {
               </div>
 
               {/* Add Finding Form */}
-              <form onSubmit={handleAddFinding} className="pt-4 border-t border-slate-100 space-y-3">
-                <div className="text-xs font-bold text-slate-800 uppercase tracking-wide">
-                  Record Additional Verified Finding
-                </div>
-                <div className="grid grid-cols-1 sm:grid-cols-4 gap-3">
-                  <div className="sm:col-span-3">
+              <form onSubmit={handleAddFinding} className="pt-4 border-t border-[#E6E8EC] space-y-3">
+                <h4 className="text-[13px] font-semibold text-[#20242C]">
+                  Attach Analytical Finding
+                </h4>
+
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  <div className="sm:col-span-2">
                     <input
                       type="text"
                       required
                       value={findingTitle}
                       onChange={(e) => setFindingTitle(e.target.value)}
-                      placeholder="Finding summary headline (e.g. Tech Support reduces churn by 40%)..."
-                      className="w-full px-3 py-1.5 border border-slate-200 rounded text-xs text-slate-800 focus:outline-none focus:ring-1 focus:ring-slate-900"
+                      placeholder="Finding summary headline (e.g. Fiber customers lack tech support)..."
+                      className="w-full h-10 px-3 border border-[#E6E8EC] rounded-md text-[13px] text-[#20242C] focus:outline-none focus:border-[#315E81]"
                     />
                   </div>
+
                   <div>
                     <select
                       value={confidence}
                       onChange={(e) => setConfidence(e.target.value)}
-                      className="w-full px-2.5 py-1.5 border border-slate-200 rounded text-xs bg-white text-slate-800 focus:outline-none"
+                      className="w-full h-10 px-2.5 border border-[#E6E8EC] rounded-md text-[13px] bg-white text-[#20242C] focus:outline-none focus:border-[#315E81]"
                     >
                       <option value="high">High Confidence</option>
                       <option value="medium">Medium Confidence</option>
-                      <option value="low">Hypothesis / Low</option>
+                      <option value="exploratory">Exploratory</option>
                     </select>
                   </div>
                 </div>
 
                 <textarea
-                  required
                   rows={2}
+                  required
                   value={findingSummary}
                   onChange={(e) => setFindingSummary(e.target.value)}
-                  placeholder="Detail the data evidence, SQL cohort calculation, or model finding supporting this observation..."
-                  className="w-full px-3 py-2 border border-slate-200 rounded text-xs text-slate-800 focus:outline-none focus:ring-1 focus:ring-slate-900"
-                ></textarea>
+                  placeholder="Detailed quantitative context and supporting SQL evidence..."
+                  className="w-full p-3 border border-[#E6E8EC] rounded-md text-[13px] text-[#20242C] focus:outline-none focus:border-[#315E81]"
+                />
 
                 <button
                   type="submit"
-                  className="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white rounded text-xs font-semibold shadow-xs"
+                  className="px-4 py-2 bg-[#20242C] hover:bg-slate-800 text-white rounded-md text-[13px] font-medium transition-colors shadow-card"
                 >
-                  Save Finding
+                  Record Finding
                 </button>
               </form>
-            </div>
+            </>
           ) : (
-            <div className="bg-white border border-slate-200 rounded-xl p-12 text-center text-slate-400 text-xs">
-              Select an investigation case file from the left to inspect evidence.
+            <div className="py-20 text-center text-[13px] text-[#697386]">
+              Select an investigation from the left panel to inspect empirical evidence.
             </div>
           )}
         </div>
       </div>
 
-      {/* Create Modal */}
+      {/* Modal for Creating Investigation */}
       {showCreateModal && (
-        <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-xs flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-xl max-w-md w-full p-6 shadow-xl border border-slate-200 space-y-4">
-            <h2 className="text-base font-bold text-slate-900">
-              Create Churn Investigation
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/30 backdrop-blur-xs">
+          <div className="bg-white border border-[#E6E8EC] rounded-lg shadow-xl max-w-md w-full p-6 space-y-4">
+            <h2 className="text-[17px] font-semibold text-[#20242C]">
+              New Retention Investigation
             </h2>
-            <form onSubmit={handleCreateInvestigation} className="space-y-3">
+
+            <form onSubmit={handleCreateInvestigation} className="space-y-4">
               <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1">Investigation Title</label>
+                <label className="block text-[13px] font-medium text-[#20242C] mb-1">
+                  Investigation Title
+                </label>
                 <input
                   type="text"
                   required
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
-                  placeholder="e.g. Month-to-Month Fiber Optic Churn Spike"
-                  className="w-full px-3 py-1.5 border border-slate-200 rounded text-xs text-slate-800 focus:outline-none"
+                  placeholder="e.g. Electronic Check Cohort Attrition"
+                  className="w-full h-10 px-3 border border-[#E6E8EC] rounded-md text-[13px] text-[#20242C] focus:outline-none focus:border-[#315E81]"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1">Target Segment</label>
+                <label className="block text-[13px] font-medium text-[#20242C] mb-1">
+                  Target Customer Segment
+                </label>
                 <input
                   type="text"
+                  required
                   value={targetSegment}
                   onChange={(e) => setTargetSegment(e.target.value)}
-                  className="w-full px-3 py-1.5 border border-slate-200 rounded text-xs text-slate-800 focus:outline-none"
+                  className="w-full h-10 px-3 border border-[#E6E8EC] rounded-md text-[13px] text-[#20242C] focus:outline-none focus:border-[#315E81]"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1">Context & Objective</label>
+                <label className="block text-[13px] font-medium text-[#20242C] mb-1">
+                  Description & Context
+                </label>
                 <textarea
                   rows={3}
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
-                  placeholder="What pattern or metric trigger prompted this investigation?"
-                  className="w-full px-3 py-2 border border-slate-200 rounded text-xs text-slate-800 focus:outline-none"
-                ></textarea>
+                  placeholder="Describe the churn pattern or hypothesis being investigated..."
+                  className="w-full p-3 border border-[#E6E8EC] rounded-md text-[13px] text-[#20242C] focus:outline-none focus:border-[#315E81]"
+                />
               </div>
 
-              <div className="flex justify-end space-x-2 pt-3">
+              <div className="flex items-center justify-end space-x-2 pt-2">
                 <button
                   type="button"
                   onClick={() => setShowCreateModal(false)}
-                  className="px-3 py-1.5 border border-slate-200 text-slate-600 rounded text-xs font-semibold hover:bg-slate-50"
+                  className="px-3.5 py-2 border border-[#E6E8EC] text-[#20242C] hover:bg-[#F7F8FA] rounded-md text-[13px] font-medium transition-colors"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-1.5 bg-slate-900 text-white rounded text-xs font-semibold hover:bg-slate-800 shadow-xs"
+                  className="px-4 py-2 bg-[#315E81] hover:bg-[#274b68] text-white rounded-md text-[13px] font-medium transition-colors shadow-card"
                 >
-                  Create Case File
+                  Create Investigation
                 </button>
               </div>
             </form>

@@ -6,12 +6,10 @@ import {
   Download,
   ChevronLeft,
   ChevronRight,
-  ArrowUpDown,
-  User,
-  ShieldAlert
+  ArrowUpDown
 } from 'lucide-react';
 import { api } from '../services/api';
-import { Customer, CustomerListResponse } from '../types';
+import { Customer } from '../types';
 import { RiskBadge } from '../components/RiskBadge';
 
 export const CustomerDirectoryPage: React.FC = () => {
@@ -98,58 +96,58 @@ export const CustomerDirectoryPage: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      {/* Page Header */}
+      {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-xl md:text-2xl font-bold text-slate-900 tracking-tight">
-            Customer Directory
+          <h1 className="text-[26px] font-semibold text-[#20242C] tracking-tight">
+            Customers
           </h1>
-          <p className="text-xs text-slate-500 mt-1">
-            Search, filter, and inspect individual customer attributes and ML churn probabilities
+          <p className="text-[14px] text-[#697386] mt-1">
+            Search, filter, and inspect individual customer records and predictive churn scores.
           </p>
         </div>
 
         <button
           onClick={exportFilteredCSV}
           disabled={customers.length === 0}
-          className="px-3.5 py-2 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 rounded-md text-xs font-semibold shadow-xs flex items-center space-x-1.5 transition-colors"
+          className="px-3.5 py-2 bg-white border border-[#E6E8EC] hover:bg-[#F7F8FA] text-[#20242C] rounded-md text-[13px] font-medium transition-colors flex items-center space-x-1.5 shadow-card self-start"
         >
-          <Download className="w-3.5 h-3.5" />
-          <span>Export Filtered CSV</span>
+          <Download className="w-4 h-4 text-[#697386]" />
+          <span>Export CSV</span>
         </button>
       </div>
 
-      {/* Filter and Search Bar */}
-      <div className="bg-white border border-slate-200 rounded-lg p-4 shadow-xs space-y-3">
+      {/* Filter and Search Bar (Section 8 & 13) */}
+      <div className="bg-white border border-[#E6E8EC] rounded-lg p-4 space-y-3">
         <form onSubmit={handleSearchSubmit} className="flex gap-2">
           <div className="relative flex-1">
-            <Search className="w-4 h-4 absolute left-3 top-2.5 text-slate-400" />
+            <Search className="w-4 h-4 absolute left-3 top-3 text-[#697386]" />
             <input
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search by customer ID (e.g. CUST-00042)..."
-              className="w-full pl-9 pr-3 py-1.5 border border-slate-200 rounded-md text-xs text-slate-900 focus:outline-none focus:ring-1 focus:ring-slate-900"
+              className="w-full h-10 pl-9 pr-3 border border-[#E6E8EC] rounded-md text-[13px] text-[#20242C] focus:outline-none focus:border-[#315E81]"
             />
           </div>
           <button
             type="submit"
-            className="px-3 py-1.5 bg-slate-900 hover:bg-slate-800 text-white rounded-md text-xs font-semibold transition-colors"
+            className="h-10 px-4 bg-[#20242C] hover:bg-slate-800 text-white rounded-md text-[13px] font-medium transition-colors shadow-card"
           >
             Search
           </button>
         </form>
 
-        <div className="flex flex-wrap items-center gap-3 pt-2 border-t border-slate-100 text-xs">
-          <div className="flex items-center space-x-1 text-slate-500">
+        <div className="flex flex-wrap items-center gap-3 pt-2 border-t border-[#E6E8EC] text-[13px]">
+          <div className="flex items-center space-x-1.5 text-[#697386]">
             <Filter className="w-3.5 h-3.5" />
-            <span className="font-semibold text-slate-700">Filters:</span>
+            <span className="font-medium text-[#20242C]">Filters:</span>
           </div>
 
           <select
             value={contract}
             onChange={(e) => { setContract(e.target.value); setPage(1); }}
-            className="px-2.5 py-1 border border-slate-200 rounded text-xs bg-white text-slate-700 focus:outline-none"
+            className="h-8 px-2.5 border border-[#E6E8EC] rounded text-[12px] bg-white text-[#20242C] focus:outline-none focus:border-[#315E81]"
           >
             <option value="">All Contracts</option>
             <option value="Month-to-month">Month-to-month</option>
@@ -160,20 +158,20 @@ export const CustomerDirectoryPage: React.FC = () => {
           <select
             value={churn}
             onChange={(e) => { setChurn(e.target.value); setPage(1); }}
-            className="px-2.5 py-1 border border-slate-200 rounded text-xs bg-white text-slate-700 focus:outline-none"
+            className="h-8 px-2.5 border border-[#E6E8EC] rounded text-[12px] bg-white text-[#20242C] focus:outline-none focus:border-[#315E81]"
           >
-            <option value="">All Churn Statuses</option>
-            <option value="no">Active (Retained)</option>
-            <option value="yes">Observed Churned</option>
+            <option value="">All Statuses</option>
+            <option value="no">Active Accounts</option>
+            <option value="yes">Historical Churn</option>
           </select>
 
           <select
             value={risk}
             onChange={(e) => { setRisk(e.target.value); setPage(1); }}
-            className="px-2.5 py-1 border border-slate-200 rounded text-xs bg-white text-slate-700 focus:outline-none"
+            className="h-8 px-2.5 border border-[#E6E8EC] rounded text-[12px] bg-white text-[#20242C] focus:outline-none focus:border-[#315E81]"
           >
-            <option value="">All Predicted Risk Tiers</option>
-            <option value="High">High Risk (Prob &ge; 60%)</option>
+            <option value="">All Risk Tiers</option>
+            <option value="High">High Risk (&ge; 60%)</option>
             <option value="Medium">Medium Risk (35-60%)</option>
             <option value="Low">Low Risk (&lt; 35%)</option>
           </select>
@@ -181,7 +179,7 @@ export const CustomerDirectoryPage: React.FC = () => {
           {(contract || churn || risk || search) && (
             <button
               onClick={() => { setContract(''); setChurn(''); setRisk(''); setSearch(''); setPage(1); }}
-              className="text-xs text-rose-600 hover:underline font-medium ml-auto"
+              className="text-[12px] text-[#C75B58] hover:underline font-medium ml-auto"
             >
               Reset Filters
             </button>
@@ -189,108 +187,101 @@ export const CustomerDirectoryPage: React.FC = () => {
         </div>
       </div>
 
-      {/* Customers Data Table */}
-      <div className="bg-white border border-slate-200 rounded-lg shadow-xs overflow-hidden">
+      {/* Customers Data Table (Section 8) */}
+      <div className="bg-white border border-[#E6E8EC] rounded-lg overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
+          <table className="w-full text-left border-collapse text-[13px]">
             <thead>
               <tr>
                 <th
                   onClick={() => handleSort('customer_identifier')}
-                  className="data-table-header cursor-pointer select-none hover:text-slate-900"
+                  className="data-table-header cursor-pointer select-none hover:text-[#20242C]"
                 >
                   <div className="flex items-center space-x-1">
                     <span>Customer ID</span>
-                    <ArrowUpDown className="w-3 h-3" />
+                    <ArrowUpDown className="w-3 h-3 text-[#697386]" />
                   </div>
                 </th>
-                <th
-                  onClick={() => handleSort('contract_type')}
-                  className="data-table-header cursor-pointer select-none hover:text-slate-900"
-                >
-                  <div className="flex items-center space-x-1">
-                    <span>Contract</span>
-                    <ArrowUpDown className="w-3 h-3" />
-                  </div>
-                </th>
+                <th className="data-table-header">Contract</th>
                 <th
                   onClick={() => handleSort('tenure_months')}
-                  className="data-table-header cursor-pointer select-none hover:text-slate-900"
+                  className="data-table-header cursor-pointer select-none hover:text-[#20242C]"
                 >
                   <div className="flex items-center space-x-1">
                     <span>Tenure</span>
-                    <ArrowUpDown className="w-3 h-3" />
+                    <ArrowUpDown className="w-3 h-3 text-[#697386]" />
                   </div>
                 </th>
                 <th
                   onClick={() => handleSort('monthly_charges')}
-                  className="data-table-header cursor-pointer select-none hover:text-slate-900"
+                  className="data-table-header text-right cursor-pointer select-none hover:text-[#20242C]"
                 >
-                  <div className="flex items-center space-x-1">
-                    <span>Monthly</span>
-                    <ArrowUpDown className="w-3 h-3" />
+                  <div className="flex items-center justify-end space-x-1">
+                    <span>Monthly Charges</span>
+                    <ArrowUpDown className="w-3 h-3 text-[#697386]" />
                   </div>
                 </th>
-                <th className="data-table-header">Internet</th>
+                <th className="data-table-header text-right">Total Charges</th>
+                <th className="data-table-header">Internet Service</th>
                 <th className="data-table-header">Observed Churn</th>
-                <th className="data-table-header">Predicted Risk Tier</th>
-                <th className="data-table-header text-right">Action</th>
+                <th className="data-table-header">ML Predicted Risk</th>
+                <th className="data-table-header text-right">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100">
+            <tbody>
               {loading ? (
                 <tr>
-                  <td colSpan={8} className="data-table-cell text-center py-12 text-slate-400">
-                    Loading records from MySQL...
+                  <td colSpan={9} className="p-12 text-center text-[13px] text-[#697386]">
+                    <div className="flex items-center justify-center space-x-2">
+                      <div className="w-4 h-4 border-2 border-[#E6E8EC] border-t-[#315E81] rounded-full animate-spin"></div>
+                      <span>Loading customer records from MySQL...</span>
+                    </div>
                   </td>
                 </tr>
               ) : customers.length === 0 ? (
                 <tr>
-                  <td colSpan={8} className="data-table-cell text-center py-12 text-slate-400">
-                    No customers match the active filters.
+                  <td colSpan={9} className="p-12 text-center text-[13px] text-[#697386]">
+                    No customer records matched your query.
                   </td>
                 </tr>
               ) : (
                 customers.map((c) => (
-                  <tr key={c.id} className="hover:bg-slate-50/70 transition-colors">
-                    <td className="data-table-cell font-mono font-medium text-slate-900">
-                      {c.customer_identifier}
+                  <tr key={c.id} className="data-table-row">
+                    <td className="data-table-cell font-mono text-[12px] text-[#315E81] font-medium">
+                      <Link to={`/app/customers/${c.id}`} className="hover:underline">
+                        {c.customer_identifier}
+                      </Link>
                     </td>
-                    <td className="data-table-cell text-slate-600">
-                      {c.contract_type || 'Month-to-month'}
-                    </td>
-                    <td className="data-table-cell text-slate-600">
-                      {c.tenure_months} mos
-                    </td>
-                    <td className="data-table-cell font-medium text-slate-800">
+                    <td className="data-table-cell text-[#20242C]">{c.contract_type}</td>
+                    <td className="data-table-cell text-[#697386]">{c.tenure_months} mos</td>
+                    <td className="data-table-cell text-[#20242C] font-mono text-right font-medium">
                       ${c.monthly_charges.toFixed(2)}
                     </td>
-                    <td className="data-table-cell text-slate-600">
-                      {c.internet_service || 'No'}
+                    <td className="data-table-cell text-[#697386] font-mono text-right">
+                      ${c.total_charges.toFixed(2)}
                     </td>
+                    <td className="data-table-cell text-[#697386]">{c.internet_service || 'No'}</td>
                     <td className="data-table-cell">
-                      {c.observed_churn ? (
-                        <span className="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-semibold bg-rose-50 text-rose-700 border border-rose-200">
-                          Churned
-                        </span>
-                      ) : (
-                        <span className="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
-                          Active
-                        </span>
-                      )}
+                      <span className={`inline-block px-2 py-0.5 rounded text-[11px] font-medium border ${
+                        c.observed_churn
+                          ? 'bg-[#FBF2F2] text-[#C75B58] border-[#F2D5D4]'
+                          : 'bg-[#F0F7F3] text-[#3E8B69] border-[#D4EADB]'
+                      }`}>
+                        {c.observed_churn ? 'Historical Churn' : 'Active'}
+                      </span>
                     </td>
                     <td className="data-table-cell">
                       <RiskBadge
-                        tier={c.latest_risk_tier}
-                        probability={c.latest_predicted_churn_probability}
+                        tier={c.latest_risk_tier || (c.latest_prediction ? c.latest_prediction.risk_tier : null)}
+                        probability={c.latest_predicted_churn_probability || (c.latest_prediction ? c.latest_prediction.predicted_churn_probability : null)}
                       />
                     </td>
                     <td className="data-table-cell text-right">
                       <Link
                         to={`/app/customers/${c.id}`}
-                        className="text-xs font-semibold text-blue-600 hover:text-blue-800 hover:underline"
+                        className="text-[12px] font-medium text-[#315E81] hover:underline"
                       >
-                        Profile &rarr;
+                        Inspect
                       </Link>
                     </td>
                   </tr>
@@ -300,28 +291,31 @@ export const CustomerDirectoryPage: React.FC = () => {
           </table>
         </div>
 
-        {/* Pagination Footer */}
-        <div className="p-4 border-t border-slate-200 flex items-center justify-between text-xs text-slate-500">
+        {/* Pagination Bar */}
+        <div className="px-5 py-3.5 border-t border-[#E6E8EC] bg-white flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 text-[13px] text-[#697386]">
           <div>
-            Showing <span className="font-semibold text-slate-800">{customers.length}</span> of{' '}
-            <span className="font-semibold text-slate-800">{total}</span> customers
+            Showing <span className="font-medium text-[#20242C]">{customers.length > 0 ? (page - 1) * pageSize + 1 : 0}</span> to{' '}
+            <span className="font-medium text-[#20242C]">{Math.min(page * pageSize, total)}</span> of{' '}
+            <span className="font-medium text-[#20242C]">{total.toLocaleString()}</span> customers
           </div>
 
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center space-x-2 self-end sm:self-auto">
             <button
               onClick={() => setPage(Math.max(1, page - 1))}
-              disabled={page <= 1}
-              className="p-1.5 rounded border border-slate-200 disabled:opacity-40 hover:bg-slate-50 transition-colors"
+              disabled={page <= 1 || loading}
+              className="p-1.5 border border-[#E6E8EC] rounded text-[#20242C] hover:bg-[#F7F8FA] disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+              aria-label="Previous page"
             >
               <ChevronLeft className="w-4 h-4" />
             </button>
-            <span className="font-medium text-slate-700">
-              Page {page} of {totalPages}
+            <span className="text-[12px] font-medium text-[#20242C]">
+              Page {page} of {Math.max(1, totalPages)}
             </span>
             <button
               onClick={() => setPage(Math.min(totalPages, page + 1))}
-              disabled={page >= totalPages}
-              className="p-1.5 rounded border border-slate-200 disabled:opacity-40 hover:bg-slate-50 transition-colors"
+              disabled={page >= totalPages || loading}
+              className="p-1.5 border border-[#E6E8EC] rounded text-[#20242C] hover:bg-[#F7F8FA] disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+              aria-label="Next page"
             >
               <ChevronRight className="w-4 h-4" />
             </button>

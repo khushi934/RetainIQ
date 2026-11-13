@@ -4,11 +4,6 @@ import {
   CheckCircle2,
   AlertTriangle,
   Database,
-  ShieldAlert,
-  ShieldCheck,
-  Clock,
-  FileText,
-  BarChart2,
   ArrowRight
 } from 'lucide-react';
 import { api } from '../services/api';
@@ -56,26 +51,29 @@ export const DataQualityPage: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="py-24 text-center text-slate-500 text-xs">
-        Loading data quality metrics...
+      <div className="py-28 text-center text-[#697386] text-[13px]">
+        <div className="flex flex-col items-center space-y-2">
+          <div className="w-5 h-5 border-2 border-[#E6E8EC] border-t-[#315E81] rounded-full animate-spin"></div>
+          <span>Loading data quality audit from MySQL...</span>
+        </div>
       </div>
     );
   }
 
   if (!report) {
     return (
-      <div className="bg-white border border-slate-200 rounded-lg p-8 text-center space-y-3">
-        <Database className="w-8 h-8 text-slate-400 mx-auto" />
-        <h2 className="text-sm font-bold text-slate-800">No Datasets Available</h2>
-        <p className="text-xs text-slate-500 max-w-sm mx-auto">
-          Import a customer CSV file or load the benchmark dataset to generate comprehensive data quality audit reports.
+      <div className="bg-white border border-[#E6E8EC] rounded-lg p-10 text-center space-y-3 max-w-lg mx-auto">
+        <Database className="w-8 h-8 text-[#697386] mx-auto" />
+        <h2 className="text-[16px] font-semibold text-[#20242C]">No Datasets Available</h2>
+        <p className="text-[13px] text-[#697386]">
+          Import a customer CSV file or load the benchmark dataset to generate data quality audit reports.
         </p>
         <Link
           to="/app/import"
-          className="inline-flex items-center space-x-1.5 px-3 py-2 bg-slate-900 text-white rounded text-xs font-semibold"
+          className="inline-flex items-center space-x-1.5 px-4 py-2 bg-[#315E81] text-white rounded-md text-[13px] font-medium shadow-card"
         >
-          <span>Go to Data Import</span>
-          <ArrowRight className="w-3.5 h-3.5" />
+          <span>Go to Data Imports</span>
+          <ArrowRight className="w-4 h-4" />
         </Link>
       </div>
     );
@@ -86,120 +84,105 @@ export const DataQualityPage: React.FC = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-xl md:text-2xl font-bold text-slate-900 tracking-tight">
-            Data Quality & Integrity Audit
+          <h1 className="text-[26px] font-semibold text-[#20242C] tracking-tight">
+            Data Quality
           </h1>
-          <p className="text-xs text-slate-500 mt-1">
-            Empirical quality checks, target leakage detection, and missing value distributions
+          <p className="text-[14px] text-[#697386] mt-1">
+            Audit validation checks, target leakage screening, and missing value statistics in MySQL.
           </p>
         </div>
 
         {datasets.length > 1 && (
           <div className="flex items-center space-x-2">
-            <span className="text-xs font-medium text-slate-500">Select Dataset:</span>
+            <span className="text-[13px] text-[#697386]">Dataset:</span>
             <select
               value={selectedDatasetId || ''}
               onChange={(e) => handleDatasetChange(parseInt(e.target.value, 10))}
-              className="px-2.5 py-1.5 bg-white border border-slate-200 rounded text-xs text-slate-800 focus:outline-none"
+              className="h-9 px-3 border border-[#E6E8EC] rounded-md text-[13px] bg-white text-[#20242C] focus:outline-none focus:border-[#315E81]"
             >
               {datasets.map((d) => (
-                <option key={d.id} value={d.id}>{d.name} ({d.row_count} rows)</option>
+                <option key={d.id} value={d.id}>
+                  {d.name} (#{d.id})
+                </option>
               ))}
             </select>
           </div>
         )}
       </div>
 
-      {/* Main Health Card */}
-      <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-xs space-y-6">
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 border-b border-slate-100 pb-5">
-          <div>
-            <span className="text-xs font-semibold text-slate-500 uppercase tracking-wide">
-              Dataset Audit: {report.dataset_name}
-            </span>
-            <div className="text-2xl font-bold text-slate-900 mt-1">
-              Data Quality Health Index
-            </div>
-            <p className="text-xs text-slate-600 mt-1 max-w-xl">
-              {report.beginner_explanation}
-            </p>
-          </div>
-
-          <div className="flex items-center space-x-3 bg-slate-50 border border-slate-200 p-3 rounded-lg">
-            <div className="text-right">
-              <span className="text-[10px] text-slate-400 uppercase font-bold tracking-wider block">Health Score</span>
-              <span className="text-2xl font-extrabold text-emerald-700">{report.quality_score}</span>
-              <span className="text-xs text-slate-400 font-medium"> / 100</span>
-            </div>
-            <div className="p-2 bg-emerald-100 text-emerald-800 rounded-full">
-              <CheckCircle2 className="w-6 h-6" />
-            </div>
-          </div>
+      {/* Summary KPI Strip */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+        <div className="bg-white p-5 border border-[#E6E8EC] rounded-lg">
+          <span className="text-[12px] font-medium text-[#697386] block">Accepted Records</span>
+          <span className="text-[26px] font-semibold text-[#3E8B69] font-mono mt-1 block">
+            {report.accepted_rows.toLocaleString()}
+          </span>
+          <span className="text-[11px] text-[#697386]">Validated and committed</span>
         </div>
 
-        {/* 4 Health Pillars */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-          <div className="p-3 bg-slate-50 border border-slate-100 rounded-md">
-            <span className="text-[11px] text-slate-500 block mb-1">Total Inspected Rows</span>
-            <span className="text-lg font-bold text-slate-900">{report.total_rows}</span>
-            <span className="text-[10px] text-slate-400 block mt-0.5">{report.accepted_rows} accepted &bull; {report.rejected_rows} rejected</span>
-          </div>
-
-          <div className="p-3 bg-slate-50 border border-slate-100 rounded-md">
-            <span className="text-[11px] text-slate-500 block mb-1">Observed Churn Label</span>
-            <span className="text-lg font-bold text-slate-900">{report.observed_churn_rate_pct}%</span>
-            <span className="text-[10px] text-slate-400 block mt-0.5">Historical ground truth</span>
-          </div>
-
-          <div className="p-3 bg-slate-50 border border-slate-100 rounded-md">
-            <span className="text-[11px] text-slate-500 block mb-1">Target Leakage Risk</span>
-            <span className="text-lg font-bold text-slate-900">
-              {report.potential_target_leakage_warnings.length === 0 ? 'None Detected' : 'Warning'}
-            </span>
-            <span className="text-[10px] text-slate-400 block mt-0.5">Features tested for post-facto bias</span>
-          </div>
-
-          <div className="p-3 bg-slate-50 border border-slate-100 rounded-md">
-            <span className="text-[11px] text-slate-500 block mb-1">Data Freshness</span>
-            <span className="text-xs font-semibold text-slate-800 block mt-1 leading-snug">
-              {report.data_freshness_status}
-            </span>
-          </div>
+        <div className="bg-white p-5 border border-[#E6E8EC] rounded-lg">
+          <span className="text-[12px] font-medium text-[#697386] block">Rejected Rows</span>
+          <span className="text-[26px] font-semibold text-[#C75B58] font-mono mt-1 block">
+            {report.rejected_rows}
+          </span>
+          <span className="text-[11px] text-[#697386]">Failed format constraints</span>
         </div>
 
-        {/* Target Leakage Warnings Section */}
-        {report.potential_target_leakage_warnings.length > 0 ? (
-          <div className="p-4 bg-amber-50 border border-amber-200 rounded-lg text-xs space-y-1 text-amber-900">
-            <div className="font-bold flex items-center space-x-1.5 text-amber-800">
-              <ShieldAlert className="w-4 h-4 text-amber-600" />
-              <span>Potential Target Leakage Identified</span>
-            </div>
-            {report.potential_target_leakage_warnings.map((warn, i) => (
-              <p key={i}>&bull; {warn}</p>
-            ))}
-          </div>
-        ) : (
-          <div className="p-3 bg-emerald-50/60 border border-emerald-200/60 rounded-lg text-xs text-emerald-900 flex items-center space-x-2">
-            <ShieldCheck className="w-4 h-4 text-emerald-700 shrink-0" />
-            <span>Target Leakage Check Passed: No column exhibits 100% predictive separation of the churn label.</span>
-          </div>
-        )}
+        <div className="bg-white p-5 border border-[#E6E8EC] rounded-lg">
+          <span className="text-[12px] font-medium text-[#697386] block">Duplicate IDs Filtered</span>
+          <span className="text-[26px] font-semibold text-[#20242C] font-mono mt-1 block">
+            {report.duplicate_id_count}
+          </span>
+          <span className="text-[11px] text-[#697386]">Idempotency enforcement</span>
+        </div>
 
-        {/* Missing Values Breakdown */}
-        <div className="border-t border-slate-100 pt-5">
-          <h3 className="text-xs font-bold text-slate-800 uppercase tracking-wide mb-3">
-            Missing Values Audit by Feature
-          </h3>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
-            {Object.entries(report.missing_values_by_column).map(([col, missingCount]) => (
-              <div key={col} className="p-3 bg-slate-50 border border-slate-100 rounded-md">
-                <span className="text-[11px] font-mono text-slate-600 block truncate">{col}</span>
-                <span className={`text-base font-bold block mt-1 ${missingCount > 0 ? 'text-amber-600' : 'text-slate-800'}`}>
-                  {missingCount} missing
-                </span>
-              </div>
-            ))}
-          </div>
+        <div className="bg-white p-5 border border-[#E6E8EC] rounded-lg">
+          <span className="text-[12px] font-medium text-[#697386] block">Data Cleanliness Rate</span>
+          <span className="text-[26px] font-semibold text-[#315E81] font-mono mt-1 block">
+            {report.total_rows > 0 ? `${((report.accepted_rows / report.total_rows) * 100).toFixed(1)}%` : '100%'}
+          </span>
+          <span className="text-[11px] text-[#697386]">Usable analytics payload</span>
+        </div>
+      </div>
+
+      {/* Column Quality Grid */}
+      <div className="bg-white border border-[#E6E8EC] rounded-lg p-5">
+        <h2 className="text-[15px] font-semibold text-[#20242C] mb-3 pb-2 border-b border-[#E6E8EC]">
+          Column Type Validation & Schema Completeness
+        </h2>
+
+        <div className="overflow-x-auto border border-[#E6E8EC] rounded-md">
+          <table className="w-full text-left border-collapse text-[13px]">
+            <thead>
+              <tr>
+                <th className="data-table-header">RetainIQ Field</th>
+                <th className="data-table-header">Mapped CSV Column</th>
+                <th className="data-table-header">Data Type</th>
+                <th className="data-table-header">Validation Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              {report.column_quality_summary && Object.entries(report.column_quality_summary).map(([col, meta]: [string, any], idx) => (
+                <tr key={idx} className="data-table-row">
+                  <td className="data-table-cell font-mono text-[12px] font-medium text-[#20242C]">
+                    {col}
+                  </td>
+                  <td className="data-table-cell font-mono text-[12px] text-[#697386]">
+                    {meta.source_column || col}
+                  </td>
+                  <td className="data-table-cell text-[#697386]">
+                    {meta.data_type || 'String / Nominal'}
+                  </td>
+                  <td className="data-table-cell">
+                    <span className="inline-flex items-center space-x-1 px-2 py-0.5 rounded text-[11px] font-medium bg-[#F0F7F3] text-[#3E8B69] border border-[#D4EADB]">
+                      <CheckCircle2 className="w-3 h-3" />
+                      <span>Valid</span>
+                    </span>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       </div>
     </div>

@@ -4,105 +4,119 @@ import {
   LayoutDashboard,
   Users,
   UploadCloud,
-  CheckCircle2,
-  Brain,
   PieChart,
+  Brain,
   Search,
   FlaskConical,
   Target,
   Sparkles,
   FileText,
   Settings,
-  BookOpen
+  BookOpen,
+  X
 } from 'lucide-react';
 
-interface NavItem {
-  name: string;
-  path: string;
-  icon: React.ElementType;
-  badge?: string;
+interface SidebarProps {
+  mobileOpen?: boolean;
+  onCloseMobile?: () => void;
 }
 
-export const Sidebar: React.FC = () => {
-  const navSections: Array<{ section: string; items: NavItem[] }> = [
-    {
-      section: 'ANALYTICS & DATA',
-      items: [
-        { name: 'Dashboard', path: '/app/dashboard', icon: LayoutDashboard },
-        { name: 'Customer Directory', path: '/app/customers', icon: Users },
-        { name: 'Data Import (CSV)', path: '/app/import', icon: UploadCloud },
-        { name: 'Data Quality Health', path: '/app/quality', icon: CheckCircle2 },
-        { name: 'Segmentation', path: '/app/segments', icon: PieChart },
-      ],
-    },
-    {
-      section: 'PREDICTION & STRATEGY',
-      items: [
-        { name: 'Predictive Models', path: '/app/models', icon: Brain },
-        { name: 'Churn Investigator', path: '/app/investigator', icon: Search },
-        { name: 'Retention Decision Lab', path: '/app/decision-lab', icon: FlaskConical, badge: 'Core' },
-        { name: 'Campaign Tracking', path: '/app/campaigns', icon: Target },
-        { name: 'RetainIQ Analyst', path: '/app/assistant', icon: Sparkles, badge: 'AI' },
-      ],
-    },
-    {
-      section: 'GOVERNANCE & SYSTEM',
-      items: [
-        { name: 'Audit Reports', path: '/app/reports', icon: FileText },
-        { name: 'Settings & MySQL', path: '/app/settings', icon: Settings },
-        { name: 'Methodology & Help', path: '/app/methodology', icon: BookOpen },
-      ],
-    },
+export const Sidebar: React.FC<SidebarProps> = ({ mobileOpen, onCloseMobile }) => {
+  const navItems = [
+    { name: 'Overview', path: '/app/dashboard', icon: LayoutDashboard },
+    { name: 'Customers', path: '/app/customers', icon: Users },
+    { name: 'Data Imports', path: '/app/import', icon: UploadCloud },
+    { name: 'Segments', path: '/app/segments', icon: PieChart },
+    { name: 'Churn Prediction', path: '/app/models', icon: Brain },
+    { name: 'Churn Investigator', path: '/app/investigator', icon: Search },
+    { name: 'Retention Decision Lab', path: '/app/decision-lab', icon: FlaskConical },
+    { name: 'Campaigns', path: '/app/campaigns', icon: Target },
+    { name: 'AI Analyst', path: '/app/assistant', icon: Sparkles },
+    { name: 'Reports', path: '/app/reports', icon: FileText },
+    { name: 'Settings', path: '/app/settings', icon: Settings },
+    { name: 'Methodology & Help', path: '/app/methodology', icon: BookOpen },
   ];
 
-  return (
-    <aside className="w-64 bg-white border-r border-slate-200 flex flex-col justify-between shrink-0 select-none">
-      <div className="py-4 overflow-y-auto">
-        {navSections.map((sec, idx) => (
-          <div key={idx} className="mb-6">
-            <div className="px-5 mb-2 text-[10px] font-bold text-slate-400 tracking-wider">
-              {sec.section}
+  const sidebarContent = (
+    <div className="w-[240px] h-full bg-white border-r border-[#E6E8EC] flex flex-col justify-between shrink-0 select-none">
+      <div>
+        {/* Brand Header */}
+        <div className="h-14 px-5 border-b border-[#E6E8EC] flex items-center justify-between">
+          <div className="flex items-center space-x-2.5">
+            <div className="w-7 h-7 rounded bg-[#315E81] flex items-center justify-center text-white font-semibold text-xs tracking-tight">
+              RQ
             </div>
-            <nav className="space-y-0.5 px-3">
-              {sec.items.map((item) => {
-                const Icon = item.icon;
-                return (
-                  <NavLink
-                    key={item.path}
-                    to={item.path}
-                    className={({ isActive }) =>
-                      `flex items-center justify-between px-3 py-2 text-xs font-medium rounded-md transition-colors ${
-                        isActive
-                          ? 'bg-slate-900 text-white shadow-sm'
-                          : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
-                      }`
-                    }
-                  >
-                    <div className="flex items-center space-x-2.5">
-                      <Icon className="w-4 h-4 shrink-0" />
-                      <span>{item.name}</span>
-                    </div>
-                    {item.badge && (
-                      <span className="text-[9px] font-semibold uppercase px-1.5 py-0.5 rounded bg-blue-100 text-blue-800">
-                        {item.badge}
-                      </span>
-                    )}
-                  </NavLink>
-                );
-              })}
-            </nav>
+            <span className="font-semibold text-[15px] text-[#20242C] tracking-tight">
+              RetainIQ
+            </span>
           </div>
-        ))}
+          {onCloseMobile && (
+            <button
+              onClick={onCloseMobile}
+              className="md:hidden p-1 text-[#697386] hover:text-[#20242C]"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          )}
+        </div>
+
+        {/* Navigation Links */}
+        <nav className="p-3 space-y-0.5">
+          {navItems.map((item) => {
+            const Icon = item.icon;
+            return (
+              <NavLink
+                key={item.path}
+                to={item.path}
+                onClick={onCloseMobile}
+                className={({ isActive }) =>
+                  `flex items-center space-x-2.5 px-3 py-2 text-[13px] font-medium rounded-md transition-colors ${
+                    isActive
+                      ? 'bg-[#F7F8FA] text-[#315E81] font-semibold'
+                      : 'text-[#697386] hover:text-[#20242C] hover:bg-[#F7F8FA]'
+                  }`
+                }
+              >
+                <Icon className="w-4 h-4 shrink-0" />
+                <span>{item.name}</span>
+              </NavLink>
+            );
+          })}
+        </nav>
       </div>
 
-      <div className="p-4 border-t border-slate-200 bg-slate-50/50">
-        <div className="text-[11px] text-slate-500 font-medium">
-          Portfolio Build 1.0.0
+      {/* Footer Area */}
+      <div className="p-4 border-t border-[#E6E8EC] bg-[#FAFBFC]">
+        <div className="flex items-center space-x-2 text-[11px] text-[#697386]">
+          <span className="w-1.5 h-1.5 rounded-full bg-[#3E8B69]"></span>
+          <span>MySQL Server 8.0 Connected</span>
         </div>
-        <div className="text-[10px] text-slate-400 mt-0.5">
-          MySQL 8.0 &bull; Scikit-learn &bull; FastAPI
+        <div className="text-[11px] text-[#697386]/70 mt-0.5">
+          Version 1.0 &bull; Enterprise SaaS
         </div>
       </div>
-    </aside>
+    </div>
+  );
+
+  return (
+    <>
+      {/* Desktop Sidebar */}
+      <aside className="hidden md:flex h-full shrink-0">
+        {sidebarContent}
+      </aside>
+
+      {/* Mobile Drawer */}
+      {mobileOpen && (
+        <div className="fixed inset-0 z-50 md:hidden flex">
+          <div
+            className="fixed inset-0 bg-black/30 backdrop-blur-xs transition-opacity"
+            onClick={onCloseMobile}
+          />
+          <div className="relative flex-1 flex flex-col max-w-[240px] w-full bg-white z-50 shadow-xl">
+            {sidebarContent}
+          </div>
+        </div>
+      )}
+    </>
   );
 };

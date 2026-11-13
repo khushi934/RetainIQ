@@ -46,6 +46,7 @@ export interface Customer {
   observed_churn: boolean;
   latest_predicted_churn_probability?: number;
   latest_risk_tier?: 'Low' | 'Medium' | 'High';
+  latest_prediction?: { churn_probability?: number; predicted_churn_probability?: number; risk_tier: 'Low' | 'Medium' | 'High'; top_factors?: any[] };
   top_contributing_factors?: Array<{ factor: string; impact: string }>;
 }
 
@@ -104,6 +105,7 @@ export interface ChurnTrendPoint {
 
 export interface RiskTierDistribution {
   risk_tier: string;
+  tier?: string;
   customer_count: number;
   percentage: number;
   revenue_sum: number;
@@ -233,6 +235,7 @@ export interface DataQualityReport {
   rejected_rows: number;
   missing_values_by_column: Record<string, number>;
   duplicate_identifiers_count: number;
+  duplicate_id_count?: number;
   invalid_dates_count: number;
   invalid_numeric_count: number;
   churn_label_distribution: Record<string, number>;
@@ -241,6 +244,7 @@ export interface DataQualityReport {
   data_freshness_status: string;
   quality_score: number;
   beginner_explanation: string;
+  column_quality_summary?: Record<string, any>;
 }
 
 export interface InvestigationFinding {
@@ -287,6 +291,7 @@ export interface Report {
   title: string;
   report_type: string;
   content_json: any;
+  content?: any;
   created_by: number;
   created_at: string;
 }

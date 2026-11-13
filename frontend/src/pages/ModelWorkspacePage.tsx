@@ -1,14 +1,13 @@
 import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import {
   Brain,
   CheckCircle2,
   AlertTriangle,
   Play,
   RotateCcw,
-  BarChart2,
   Info,
-  ShieldCheck,
-  ChevronRight
+  ArrowRight
 } from 'lucide-react';
 import {
   ResponsiveContainer,
@@ -20,7 +19,8 @@ import {
   CartesianGrid
 } from 'recharts';
 import { api } from '../services/api';
-import { ModelVersion } from '../types';
+import { ModelVersion, Customer } from '../types';
+import { RiskBadge } from '../components/RiskBadge';
 
 export const ModelWorkspacePage: React.FC = () => {
   const [models, setModels] = useState<ModelVersion[]>([]);
@@ -29,11 +29,13 @@ export const ModelWorkspacePage: React.FC = () => {
   const [testSize, setTestSize] = useState(0.2);
   const [training, setTraining] = useState(false);
   const [scoring, setScoring] = useState(false);
+  const [sampleCustomers, setSampleCustomers] = useState<Customer[]>([]);
   const [message, setMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     loadModels();
+    loadScoredCustomers();
   }, []);
 
   const loadModels = async () => {
@@ -48,6 +50,15 @@ export const ModelWorkspacePage: React.FC = () => {
     }
   };
 
+  const loadScoredCustomers = async () => {
+    try {
+      const res = await api.getCustomers({ page: 1, page_size: 6, sort_by: 'monthly_charges', sort_order: 'desc' });
+      setSampleCustomers(res.items);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   const handleTrainModel = async () => {
     setTraining(true);
     setError(null);
@@ -56,7 +67,8 @@ export const ModelWorkspacePage: React.FC = () => {
       const newModel = await api.trainModel(algorithm, testSize);
       setModels([newModel, ...models]);
       setSelectedModel(newModel);
-      setMessage(`Trained and evaluated model ${newModel.version_code} successfully!`);
+      setMessage(`Model ${newModel.version_code} trained and evaluated successfully.`);
+      await loadScoredCustomers();
     } catch (err: any) {
       setError(err.message || 'Model training failed.');
     } finally {
@@ -72,6 +84,7 @@ export const ModelWorkspacePage: React.FC = () => {
     try {
       const res = await api.runBatchPredictions(selectedModel.id);
       setMessage(res.message);
+      await loadScoredCustomers();
     } catch (err: any) {
       setError(err.message || 'Scoring batch failed.');
     } finally {
@@ -81,7 +94,7 @@ export const ModelWorkspacePage: React.FC = () => {
 
   const featureChartData = selectedModel?.feature_importances
     ? Object.entries(selectedModel.feature_importances)
-        .slice(0, 10)
+        .slice(0, 8)
         .map(([feature, importance]) => ({
           feature: feature.replace(/_/g, ' '),
           importance: Math.round(importance * 1000) / 10,
@@ -89,15 +102,15 @@ export const ModelWorkspacePage: React.FC = () => {
     : [];
 
   return (
-    <div className="space-y-6">
-      {/* Page Header */}
+    <div className="space-y-7">
+      {/* Page Header (Section 11) */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-xl md:text-2xl font-bold text-slate-900 tracking-tight">
-            Churn Predictive Modeling Workspace
+          <h1 className="text-[26px] font-semibold text-[#20242C] tracking-tight">
+            Churn Prediction
           </h1>
-          <p className="text-xs text-slate-500 mt-1">
-            Genuine Scikit-learn pipelines &bull; Strict train/test separation &bull; Feature importances &bull; Joblib storage
+          <p className="text-[14px] text-[#697386] mt-1">
+            Supervised machine learning pipelines trained on verified customer records with strict holdout evaluation.
           </p>
         </div>
 
@@ -105,58 +118,60 @@ export const ModelWorkspacePage: React.FC = () => {
           <button
             onClick={handleRunPredictions}
             disabled={scoring}
-            className="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white rounded-md text-xs font-semibold shadow-xs flex items-center space-x-1.5 transition-colors self-start"
+            className="px-4 py-2 bg-[#315E81] hover:bg-[#274b68] text-white rounded-md text-[13px] font-medium transition-colors flex items-center space-x-1.5 shadow-card self-start"
           >
-            <RotateCcw className="w-3.5 h-3.5" />
-            <span>{scoring ? 'Scoring Customers...' : 'Score All Customers in MySQL'}</span>
+            <RotateCcw className="w-4 h-4" />
+            <span>{scoring ? 'Scoring Accounts...' : 'Score All Customers in MySQL'}</span>
           </button>
         )}
       </div>
 
       {error && (
-        <div className="p-4 bg-rose-50 border border-rose-200 rounded-lg text-xs text-rose-800 flex items-start space-x-2">
+        <div className="p-3.5 bg-[#FBF2F2] border border-[#F2D5D4] rounded-lg text-[13px] text-[#C75B58] flex items-start space-x-2">
           <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5" />
           <span>{error}</span>
         </div>
       )}
 
       {message && (
-        <div className="p-4 bg-emerald-50 border border-emerald-200 rounded-lg text-xs text-emerald-800 flex items-start space-x-2">
+        <div className="p-3.5 bg-[#F0F7F3] border border-[#D4EADB] rounded-lg text-[13px] text-[#3E8B69] flex items-start space-x-2">
           <CheckCircle2 className="w-4 h-4 shrink-0 mt-0.5" />
           <span>{message}</span>
         </div>
       )}
 
-      {/* Model Training & Configuration Panel */}
-      <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-xs">
-        <h2 className="text-xs font-bold text-slate-900 uppercase tracking-wide mb-3 flex items-center space-x-1.5">
-          <Brain className="w-4 h-4 text-indigo-600" />
-          <span>Train a Model Version</span>
-        </h2>
+      {/* Training Configuration Form */}
+      <div className="bg-white border border-[#E6E8EC] rounded-lg p-5">
+        <div className="flex items-center space-x-2 pb-3 mb-4 border-b border-[#E6E8EC]">
+          <Brain className="w-4 h-4 text-[#315E81]" />
+          <h2 className="text-[14px] font-semibold text-[#20242C]">
+            Model Training Configuration
+          </h2>
+        </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 items-end">
           <div>
-            <label className="block text-xs font-semibold text-slate-700 mb-1">
-              Classifier Algorithm
+            <label className="block text-[13px] font-medium text-[#20242C] mb-1.5">
+              Classification Algorithm
             </label>
             <select
               value={algorithm}
               onChange={(e: any) => setAlgorithm(e.target.value)}
-              className="w-full px-3 py-1.5 border border-slate-200 rounded text-xs text-slate-800 bg-white focus:outline-none"
+              className="w-full h-10 px-3 border border-[#E6E8EC] rounded-md text-[13px] text-[#20242C] bg-white focus:outline-none focus:border-[#315E81]"
             >
               <option value="random_forest">Random Forest Classifier (Balanced)</option>
-              <option value="logistic_regression">Logistic Regression (L2 Regularized)</option>
+              <option value="logistic_regression">Logistic Regression (L2)</option>
             </select>
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-slate-700 mb-1">
+            <label className="block text-[13px] font-medium text-[#20242C] mb-1.5">
               Holdout Evaluation Split
             </label>
             <select
               value={testSize}
               onChange={(e) => setTestSize(parseFloat(e.target.value))}
-              className="w-full px-3 py-1.5 border border-slate-200 rounded text-xs text-slate-800 bg-white focus:outline-none"
+              className="w-full h-10 px-3 border border-[#E6E8EC] rounded-md text-[13px] text-[#20242C] bg-white focus:outline-none focus:border-[#315E81]"
             >
               <option value={0.20}>80% Train / 20% Holdout Test</option>
               <option value={0.30}>70% Train / 30% Holdout Test</option>
@@ -166,171 +181,177 @@ export const ModelWorkspacePage: React.FC = () => {
           <button
             onClick={handleTrainModel}
             disabled={training}
-            className="w-full py-2 px-4 bg-indigo-600 hover:bg-indigo-700 text-white rounded text-xs font-semibold flex items-center justify-center space-x-1.5 transition-colors shadow-xs"
+            className="w-full h-10 px-4 bg-[#20242C] hover:bg-slate-800 text-white rounded-md text-[13px] font-medium flex items-center justify-center space-x-1.5 transition-colors shadow-card"
           >
             <Play className="w-3.5 h-3.5 fill-current" />
-            <span>{training ? 'Fitting Preprocessor & Trees...' : 'Fit & Evaluate Model'}</span>
+            <span>{training ? 'Training Model...' : 'Train Model Version'}</span>
           </button>
         </div>
 
-        <p className="text-[11px] text-slate-400 mt-2">
-          Note: Preprocessing (imputation and one-hot encoding) is fitted strictly on training data to prevent information leakage.
+        <p className="text-[12px] text-[#697386] mt-3">
+          Leakage guard: Preprocessing pipelines are fitted solely on training splits. Post-event identifiers and future dates are strictly excluded.
         </p>
       </div>
 
       {/* Model Version Inspector */}
       {selectedModel ? (
         <div className="space-y-6">
-          {/* Version Header Pill */}
-          <div className="flex items-center space-x-2 text-xs font-medium text-slate-600">
-            <span>Model Version:</span>
-            <div className="flex items-center space-x-1.5">
-              {models.map((m) => (
-                <button
-                  key={m.id}
-                  onClick={() => setSelectedModel(m)}
-                  className={`px-2.5 py-1 rounded text-xs font-semibold border transition-colors ${
-                    selectedModel.id === m.id
-                      ? 'bg-slate-900 text-white border-slate-900'
-                      : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
-                  }`}
-                >
-                  {m.version_code} &bull; {m.algorithm_name.split(' ')[0]}
-                </button>
-              ))}
+          {/* Active Model Bar & Version Selector */}
+          <div className="bg-white border border-[#E6E8EC] rounded-lg p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+            <div className="flex items-center space-x-3">
+              <span className="text-[13px] font-medium text-[#697386]">Model Version:</span>
+              <div className="flex items-center space-x-1.5 flex-wrap">
+                {models.map((m) => (
+                  <button
+                    key={m.id}
+                    onClick={() => setSelectedModel(m)}
+                    className={`px-2.5 py-1 rounded text-[12px] font-medium border transition-colors ${
+                      selectedModel.id === m.id
+                        ? 'bg-[#315E81] text-white border-[#315E81]'
+                        : 'bg-white text-[#20242C] border-[#E6E8EC] hover:bg-[#F7F8FA]'
+                    }`}
+                  >
+                    {m.version_code} &bull; {m.algorithm_name.split(' ')[0]}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="text-[12px] text-[#697386]">
+              Algorithm: <span className="font-medium text-[#20242C]">{selectedModel.algorithm_name}</span> &bull; Sample: {selectedModel.training_sample_size + selectedModel.test_sample_size} records
             </div>
           </div>
 
-          {/* Metric Cards */}
-          <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
-            <div className="bg-white p-3.5 border border-slate-200 rounded-lg shadow-xs">
-              <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-wide block">
-                ROC-AUC Score
+          {/* Metric Cards (Section 11) */}
+          <div className="grid grid-cols-2 sm:grid-cols-5 gap-4">
+            <div className="bg-white p-4 border border-[#E6E8EC] rounded-lg">
+              <span className="text-[12px] font-medium text-[#697386] block">
+                ROC-AUC
               </span>
-              <span className="text-xl font-extrabold text-indigo-700 mt-1 block">
+              <span className="text-[26px] font-semibold text-[#315E81] tracking-tight mt-1 block font-mono">
                 {selectedModel.evaluation_metrics.roc_auc.toFixed(3)}
               </span>
-              <span className="text-[10px] text-slate-400">Class separation power</span>
+              <span className="text-[11px] text-[#697386]">Separation metric</span>
             </div>
 
-            <div className="bg-white p-3.5 border border-slate-200 rounded-lg shadow-xs">
-              <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-wide block">
+            <div className="bg-white p-4 border border-[#E6E8EC] rounded-lg">
+              <span className="text-[12px] font-medium text-[#697386] block">
                 F1 Score
               </span>
-              <span className="text-xl font-bold text-slate-900 mt-1 block">
+              <span className="text-[26px] font-semibold text-[#20242C] tracking-tight mt-1 block font-mono">
                 {selectedModel.evaluation_metrics.f1_score.toFixed(3)}
               </span>
-              <span className="text-[10px] text-slate-400">Harmonic precision/recall</span>
+              <span className="text-[11px] text-[#697386]">Harmonic mean</span>
             </div>
 
-            <div className="bg-white p-3.5 border border-slate-200 rounded-lg shadow-xs">
-              <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-wide block">
+            <div className="bg-white p-4 border border-[#E6E8EC] rounded-lg">
+              <span className="text-[12px] font-medium text-[#697386] block">
                 Precision
               </span>
-              <span className="text-xl font-bold text-slate-900 mt-1 block">
+              <span className="text-[26px] font-semibold text-[#20242C] tracking-tight mt-1 block font-mono">
                 {(selectedModel.evaluation_metrics.precision * 100).toFixed(1)}%
               </span>
-              <span className="text-[10px] text-slate-400">True churners / flagged</span>
+              <span className="text-[11px] text-[#697386]">True churn / flagged</span>
             </div>
 
-            <div className="bg-white p-3.5 border border-slate-200 rounded-lg shadow-xs">
-              <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-wide block">
+            <div className="bg-white p-4 border border-[#E6E8EC] rounded-lg">
+              <span className="text-[12px] font-medium text-[#697386] block">
                 Recall
               </span>
-              <span className="text-xl font-bold text-slate-900 mt-1 block">
+              <span className="text-[26px] font-semibold text-[#20242C] tracking-tight mt-1 block font-mono">
                 {(selectedModel.evaluation_metrics.recall * 100).toFixed(1)}%
               </span>
-              <span className="text-[10px] text-slate-400">Captured of all churners</span>
+              <span className="text-[11px] text-[#697386]">Captured churners</span>
             </div>
 
-            <div className="bg-white p-3.5 border border-slate-200 rounded-lg shadow-xs">
-              <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-wide block">
-                Baseline Rate
+            <div className="bg-white p-4 border border-[#E6E8EC] rounded-lg">
+              <span className="text-[12px] font-medium text-[#697386] block">
+                Baseline Churn
               </span>
-              <span className="text-xl font-bold text-slate-700 mt-1 block">
+              <span className="text-[26px] font-semibold text-[#697386] tracking-tight mt-1 block font-mono">
                 {(selectedModel.evaluation_metrics.baseline_churn_rate * 100).toFixed(1)}%
               </span>
-              <span className="text-[10px] text-slate-400">Class prevalence baseline</span>
+              <span className="text-[11px] text-[#697386]">Class prevalence</span>
             </div>
           </div>
 
-          {/* Grid: Confusion Matrix & Feature Importances */}
+          {/* Confusion Matrix & Feature Importances (Section 11) */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {/* Confusion Matrix Table */}
-            <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-xs">
-              <div className="flex items-center justify-between mb-3">
-                <h3 className="text-sm font-bold text-slate-900">
+            {/* Confusion Matrix */}
+            <div className="bg-white border border-[#E6E8EC] rounded-lg p-5">
+              <div className="flex items-center justify-between mb-2">
+                <h3 className="text-[15px] font-semibold text-[#20242C]">
                   Holdout Test Confusion Matrix
                 </h3>
-                <span className="text-xs text-slate-400 font-mono">
+                <span className="text-[12px] text-[#697386] font-mono">
                   {selectedModel.test_sample_size} unseen test samples
                 </span>
               </div>
-              <p className="text-xs text-slate-500 mb-4">
-                Evaluates how accurately the classifier distinguishes between churned and retained customers on holdout data.
+              <p className="text-[12px] text-[#697386] mb-4">
+                Classification outcomes on the independent 20% holdout test partition.
               </p>
 
               <div className="grid grid-cols-2 gap-3 text-center">
-                <div className="p-4 bg-emerald-50/60 border border-emerald-200/60 rounded-lg">
-                  <span className="text-[10px] text-emerald-800 font-bold uppercase tracking-wider block">
+                <div className="p-4 bg-[#F0F7F3] border border-[#D4EADB] rounded-md">
+                  <span className="text-[11px] text-[#3E8B69] font-medium block">
                     True Negatives (TN)
                   </span>
-                  <span className="text-2xl font-extrabold text-emerald-900 mt-1 block">
+                  <span className="text-[26px] font-semibold text-[#20242C] font-mono mt-0.5 block">
                     {selectedModel.evaluation_metrics.confusion_matrix.true_negatives}
                   </span>
-                  <span className="text-[11px] text-emerald-700 mt-0.5 block">
-                    Correctly classified as Active
+                  <span className="text-[11px] text-[#697386] mt-0.5 block">
+                    Correctly classified Active
                   </span>
                 </div>
 
-                <div className="p-4 bg-amber-50/60 border border-amber-200/60 rounded-lg">
-                  <span className="text-[10px] text-amber-800 font-bold uppercase tracking-wider block">
+                <div className="p-4 bg-[#FDF7EE] border border-[#F7E4C4] rounded-md">
+                  <span className="text-[11px] text-[#D69A37] font-medium block">
                     False Positives (FP)
                   </span>
-                  <span className="text-2xl font-extrabold text-amber-900 mt-1 block">
+                  <span className="text-[26px] font-semibold text-[#20242C] font-mono mt-0.5 block">
                     {selectedModel.evaluation_metrics.confusion_matrix.false_positives}
                   </span>
-                  <span className="text-[11px] text-amber-700 mt-0.5 block">
-                    Active falsely flagged as Churn
+                  <span className="text-[11px] text-[#697386] mt-0.5 block">
+                    Active flagged as Churn
                   </span>
                 </div>
 
-                <div className="p-4 bg-rose-50/60 border border-rose-200/60 rounded-lg">
-                  <span className="text-[10px] text-rose-800 font-bold uppercase tracking-wider block">
+                <div className="p-4 bg-[#FBF2F2] border border-[#F2D5D4] rounded-md">
+                  <span className="text-[11px] text-[#C75B58] font-medium block">
                     False Negatives (FN)
                   </span>
-                  <span className="text-2xl font-extrabold text-rose-900 mt-1 block">
+                  <span className="text-[26px] font-semibold text-[#20242C] font-mono mt-0.5 block">
                     {selectedModel.evaluation_metrics.confusion_matrix.false_negatives}
                   </span>
-                  <span className="text-[11px] text-rose-700 mt-0.5 block">
-                    Missed real churners
+                  <span className="text-[11px] text-[#697386] mt-0.5 block">
+                    Missed actual churners
                   </span>
                 </div>
 
-                <div className="p-4 bg-indigo-50/60 border border-indigo-200/60 rounded-lg">
-                  <span className="text-[10px] text-indigo-800 font-bold uppercase tracking-wider block">
+                <div className="p-4 bg-[#F0F5F9] border border-[#E6E8EC] rounded-md">
+                  <span className="text-[11px] text-[#315E81] font-medium block">
                     True Positives (TP)
                   </span>
-                  <span className="text-2xl font-extrabold text-indigo-900 mt-1 block">
+                  <span className="text-[26px] font-semibold text-[#20242C] font-mono mt-0.5 block">
                     {selectedModel.evaluation_metrics.confusion_matrix.true_positives}
                   </span>
-                  <span className="text-[11px] text-indigo-700 mt-0.5 block">
-                    Correctly identified churners
+                  <span className="text-[11px] text-[#697386] mt-0.5 block">
+                    Correctly identified Churn
                   </span>
                 </div>
               </div>
             </div>
 
             {/* Feature Importances Chart */}
-            <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-xs">
-              <div className="flex items-center justify-between mb-3">
-                <h3 className="text-sm font-bold text-slate-900">
+            <div className="bg-white border border-[#E6E8EC] rounded-lg p-5">
+              <div className="flex items-center justify-between mb-2">
+                <h3 className="text-[15px] font-semibold text-[#20242C]">
                   Feature Importance Ranking
                 </h3>
-                <span className="text-xs text-slate-400">Relative Weight (%)</span>
+                <span className="text-[12px] text-[#697386]">Relative Weight (%)</span>
               </div>
-              <p className="text-xs text-slate-500 mb-4">
-                Attributes most strongly predictive of churn in the Random Forest model.
+              <p className="text-[12px] text-[#697386] mb-4">
+                Relative statistical association of attributes with churn risk.
               </p>
 
               <div className="h-60 w-full">
@@ -338,25 +359,98 @@ export const ModelWorkspacePage: React.FC = () => {
                   <BarChart
                     data={featureChartData}
                     layout="vertical"
-                    margin={{ top: 5, right: 20, left: 60, bottom: 5 }}
+                    margin={{ top: 5, right: 20, left: 70, bottom: 5 }}
                   >
-                    <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#f1f5f9" />
-                    <XAxis type="number" stroke="#64748b" fontSize={10} unit="%" />
-                    <YAxis dataKey="feature" type="category" stroke="#64748b" fontSize={11} width={80} />
+                    <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#E6E8EC" />
+                    <XAxis type="number" stroke="#697386" fontSize={11} unit="%" />
+                    <YAxis dataKey="feature" type="category" stroke="#697386" fontSize={11} width={80} />
                     <Tooltip
-                      contentStyle={{ backgroundColor: '#0f172a', borderColor: '#0f172a', color: '#fff', fontSize: '11px', borderRadius: '6px' }}
+                      contentStyle={{ backgroundColor: '#20242C', borderColor: '#20242C', color: '#FFFFFF', fontSize: '12px', borderRadius: '6px' }}
                       formatter={(val: any) => [`${val}%`, 'Relative Importance']}
                     />
-                    <Bar dataKey="importance" fill="#4f46e5" radius={[0, 4, 4, 0]} />
+                    <Bar dataKey="importance" fill="#315E81" radius={[0, 3, 3, 0]} />
                   </BarChart>
                 </ResponsiveContainer>
               </div>
             </div>
           </div>
+
+          {/* Customer Prediction Table (Section 11) */}
+          <div className="bg-white border border-[#E6E8EC] rounded-lg p-5">
+            <div className="flex items-center justify-between mb-3">
+              <div>
+                <h3 className="text-[15px] font-semibold text-[#20242C]">
+                  Customer Inference Samples
+                </h3>
+                <p className="text-[12px] text-[#697386] mt-0.5">
+                  Distinguishes between model-predicted probability and historical observed churn status.
+                </p>
+              </div>
+              <Link
+                to="/app/customers"
+                className="text-[13px] font-medium text-[#315E81] hover:underline flex items-center space-x-1"
+              >
+                <span>Full Directory</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </Link>
+            </div>
+
+            <div className="overflow-x-auto border border-[#E6E8EC] rounded-md">
+              <table className="w-full text-left border-collapse text-[13px]">
+                <thead>
+                  <tr>
+                    <th className="data-table-header">Customer ID</th>
+                    <th className="data-table-header">Contract</th>
+                    <th className="data-table-header">Tenure</th>
+                    <th className="data-table-header text-right">Monthly Charges</th>
+                    <th className="data-table-header">Predicted Risk Tier</th>
+                    <th className="data-table-header text-right">Predicted Churn Prob.</th>
+                    <th className="data-table-header">Historical Outcome</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {sampleCustomers.map((c) => (
+                    <tr key={c.id} className="data-table-row">
+                      <td className="data-table-cell font-mono text-[12px] text-[#315E81] font-medium">
+                        <Link to={`/app/customers/${c.id}`} className="hover:underline">
+                          {c.customer_identifier}
+                        </Link>
+                      </td>
+                      <td className="data-table-cell text-[#20242C]">{c.contract_type}</td>
+                      <td className="data-table-cell text-[#697386]">{c.tenure_months} mos</td>
+                      <td className="data-table-cell text-[#20242C] font-mono text-right font-medium">
+                        ${c.monthly_charges.toFixed(2)}
+                      </td>
+                      <td className="data-table-cell">
+                        <RiskBadge
+                          tier={c.latest_prediction?.risk_tier}
+                          probability={c.latest_prediction?.predicted_churn_probability}
+                        />
+                      </td>
+                      <td className="data-table-cell text-right font-mono font-medium text-[#20242C]">
+                        {c.latest_prediction?.predicted_churn_probability !== undefined
+                          ? `${(c.latest_prediction.predicted_churn_probability * 100).toFixed(1)}%`
+                          : 'Unscored'}
+                      </td>
+                      <td className="data-table-cell">
+                        <span className={`inline-block px-2 py-0.5 rounded text-[11px] font-medium border ${
+                          c.observed_churn
+                            ? 'bg-[#FBF2F2] text-[#C75B58] border-[#F2D5D4]'
+                            : 'bg-[#F0F7F3] text-[#3E8B69] border-[#D4EADB]'
+                        }`}>
+                          {c.observed_churn ? 'Historical Churn' : 'Active Account'}
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
         </div>
       ) : (
-        <div className="py-12 text-center text-slate-400 text-xs">
-          No models trained yet in this workspace. Click "Fit & Evaluate Model" above to train your first classifier.
+        <div className="py-14 text-center text-[#697386] text-[13px] bg-white border border-[#E6E8EC] rounded-lg">
+          No trained model versions found. Click "Train Model Version" above to fit a classifier.
         </div>
       )}
     </div>

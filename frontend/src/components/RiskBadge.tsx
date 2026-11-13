@@ -8,33 +8,33 @@ interface RiskBadgeProps {
 export const RiskBadge: React.FC<RiskBadgeProps> = ({ tier, probability }) => {
   if (!tier) {
     return (
-      <span className="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-medium bg-slate-100 text-slate-600 border border-slate-200">
+      <span className="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-medium bg-[#F7F8FA] text-[#697386] border border-[#E6E8EC]">
         Unscored
       </span>
     );
   }
 
   const normalized = tier.toLowerCase();
-  let colorStyle = 'bg-slate-100 text-slate-700 border-slate-200';
-  let dotColor = 'bg-slate-400';
+  let colorStyle = 'bg-[#F7F8FA] text-[#697386] border-[#E6E8EC]';
+  let dotColor = 'bg-[#697386]';
 
   if (normalized === 'high') {
-    colorStyle = 'bg-rose-50 text-rose-800 border-rose-200';
-    dotColor = 'bg-rose-500';
+    colorStyle = 'bg-[#FBF2F2] text-[#C75B58] border-[#F2D5D4]';
+    dotColor = 'bg-[#C75B58]';
   } else if (normalized === 'medium') {
-    colorStyle = 'bg-amber-50 text-amber-800 border-amber-200';
-    dotColor = 'bg-amber-500';
+    colorStyle = 'bg-[#FDF7EE] text-[#D69A37] border-[#F7E4C4]';
+    dotColor = 'bg-[#D69A37]';
   } else if (normalized === 'low') {
-    colorStyle = 'bg-emerald-50 text-emerald-800 border-emerald-200';
-    dotColor = 'bg-emerald-500';
+    colorStyle = 'bg-[#F0F7F3] text-[#3E8B69] border-[#D4EADB]';
+    dotColor = 'bg-[#3E8B69]';
   }
 
   return (
-    <span className={`inline-flex items-center space-x-1.5 px-2 py-0.5 rounded border text-[11px] font-medium ${colorStyle}`}>
+    <span className={`inline-flex items-center space-x-1.5 px-2 py-0.5 rounded text-[12px] font-medium border ${colorStyle}`}>
       <span className={`w-1.5 h-1.5 rounded-full ${dotColor}`}></span>
-      <span>{tier} Risk</span>
+      <span>{tier}</span>
       {probability !== undefined && probability !== null && (
-        <span className="opacity-75 font-mono text-[10px]">
+        <span className="opacity-75 font-mono text-[11px]">
           ({Math.round(probability * 100)}%)
         </span>
       )}

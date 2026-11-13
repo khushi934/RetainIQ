@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { api } from '../services/api';
 import { Report } from '../types';
-import { FileText, Download, Plus, CheckCircle, AlertCircle, RefreshCw, Calendar, Eye, ShieldCheck } from 'lucide-react';
+import { Download, Plus, CheckCircle2, AlertTriangle, RefreshCw, Eye, X } from 'lucide-react';
 
 export const ReportsPage: React.FC = () => {
   const [reports, setReports] = useState<Report[]>([]);
@@ -9,8 +9,6 @@ export const ReportsPage: React.FC = () => {
   const [generating, setGenerating] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [successMsg, setSuccessMsg] = useState<string | null>(null);
-
-  // Preview Modal
   const [previewReport, setPreviewReport] = useState<Report | null>(null);
 
   const fetchReports = async () => {
@@ -37,7 +35,7 @@ export const ReportsPage: React.FC = () => {
       setError(null);
       setSuccessMsg(null);
       const res = await api.generateExecutiveReport();
-      setSuccessMsg(`Executive Audit Report "${res.title}" generated successfully!`);
+      setSuccessMsg(`Executive Audit Report "${res.title}" generated successfully.`);
       await fetchReports();
     } catch (err: any) {
       setError(err.message || 'Failed to generate executive report');
@@ -54,214 +52,178 @@ export const ReportsPage: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-border">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-text-primary tracking-tight">Reports & Executive Exports</h1>
-          <p className="text-sm text-text-secondary mt-1">
-            Generate verifiable customer churn audits, model evaluations, and Decision Lab scenario reports backed by MySQL.
+          <h1 className="text-[26px] font-semibold text-[#20242C] tracking-tight">Reports</h1>
+          <p className="text-[14px] text-[#697386] mt-1">
+            Generate customer churn audits, model evaluations, and Decision Lab scenario exports backed by MySQL.
           </p>
         </div>
         <button
           onClick={fetchReports}
-          className="inline-flex items-center gap-2 px-3 py-1.5 text-xs font-medium text-text-secondary bg-surface border border-border rounded-md hover:bg-slate-50 transition-colors"
+          className="inline-flex items-center gap-1.5 px-3.5 py-2 text-[13px] font-medium text-[#20242C] bg-white border border-[#E6E8EC] rounded-md hover:bg-[#F7F8FA] transition-colors shadow-card self-start"
         >
-          <RefreshCw className="w-3.5 h-3.5" />
-          Refresh List
+          <RefreshCw className="w-3.5 h-3.5 text-[#697386]" />
+          <span>Refresh</span>
         </button>
       </div>
 
       {error && (
-        <div className="p-4 bg-red-50 border border-red-200 rounded-lg flex items-start gap-3">
-          <AlertCircle className="w-5 h-5 text-danger shrink-0 mt-0.5" />
-          <p className="text-sm text-red-800">{error}</p>
+        <div className="p-3.5 bg-[#FBF2F2] border border-[#F2D5D4] rounded-lg text-[13px] text-[#C75B58] flex items-start gap-2">
+          <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5" />
+          <p>{error}</p>
         </div>
       )}
 
       {successMsg && (
-        <div className="p-4 bg-emerald-50 border border-emerald-200 rounded-lg flex items-start gap-3">
-          <CheckCircle className="w-5 h-5 text-success shrink-0 mt-0.5" />
-          <p className="text-sm text-emerald-800">{successMsg}</p>
+        <div className="p-3.5 bg-[#F0F7F3] border border-[#D4EADB] rounded-lg text-[13px] text-[#3E8B69] flex items-start gap-2">
+          <CheckCircle2 className="w-4 h-4 shrink-0 mt-0.5" />
+          <p>{successMsg}</p>
         </div>
       )}
 
-      {/* Grid: Generator Form & Recent Reports */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Generator Form */}
-        <div className="lg:col-span-1 bg-surface p-5 rounded-lg border border-border shadow-sm space-y-4">
-          <div className="flex items-center gap-2 pb-3 border-b border-border">
-            <Plus className="w-5 h-5 text-brand" />
-            <h2 className="text-base font-semibold text-text-primary">Generate Audit Report</h2>
+        <div className="lg:col-span-1 bg-white p-5 rounded-lg border border-[#E6E8EC] space-y-4">
+          <div className="pb-3 border-b border-[#E6E8EC]">
+            <h2 className="text-[15px] font-semibold text-[#20242C]">Generate Report</h2>
+            <p className="text-[12px] text-[#697386] mt-0.5">Automated executive intelligence synthesis</p>
           </div>
 
           <form onSubmit={handleGenerate} className="space-y-4">
             <div>
-              <label className="block text-xs font-semibold text-text-secondary uppercase mb-1">
+              <label className="block text-[13px] font-medium text-[#20242C] mb-1.5">
                 Report Type
               </label>
-              <select
-                disabled
-                className="w-full px-3 py-2 border border-border rounded-md text-sm text-text-primary bg-slate-50 cursor-not-allowed"
-              >
-                <option>Executive Retention & Churn Audit</option>
+              <select className="w-full h-10 px-3 border border-[#E6E8EC] rounded-md text-[13px] bg-white text-[#20242C] focus:outline-none focus:border-[#315E81]">
+                <option value="executive_summary">Executive Retention & Churn Audit</option>
+                <option value="model_governance">Machine Learning Model Evaluation</option>
+                <option value="decision_lab">Decision Lab Scenario Analysis</option>
               </select>
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-text-secondary uppercase mb-1">
-                Export Format
+              <label className="block text-[13px] font-medium text-[#20242C] mb-1.5">
+                Output Format
               </label>
-              <select
-                disabled
-                className="w-full px-3 py-2 border border-border rounded-md text-sm text-text-primary bg-slate-50 cursor-not-allowed"
-              >
-                <option>CSV (Structured Spreadsheet Export)</option>
-              </select>
-            </div>
-
-            <div className="p-3 bg-slate-50 border border-slate-200 rounded-md text-xs text-text-muted space-y-1.5">
-              <div className="flex items-center gap-1.5 font-semibold text-text-secondary">
-                <ShieldCheck className="w-4 h-4 text-emerald-600" />
-                <span>Audit Integrity Verification</span>
+              <div className="flex gap-2">
+                <span className="px-3 py-1.5 bg-[#F7F8FA] border border-[#E6E8EC] rounded text-[12px] font-medium text-[#20242C]">
+                  JSON / Markdown Document
+                </span>
+                <span className="px-3 py-1.5 bg-[#F7F8FA] border border-[#E6E8EC] rounded text-[12px] font-medium text-[#20242C]">
+                  Printable
+                </span>
               </div>
-              <p>
-                Compiles live MySQL aggregations, cohort tenure distributions, active contract breakdowns, and ML model evaluation metrics into an immutable audit snapshot.
-              </p>
             </div>
 
             <button
               type="submit"
               disabled={generating}
-              className="w-full py-2.5 px-4 bg-brand text-white font-medium text-sm rounded-md hover:bg-slate-800 disabled:opacity-50 transition-colors shadow-sm flex items-center justify-center gap-2"
+              className="w-full h-10 px-4 bg-[#315E81] hover:bg-[#274b68] disabled:opacity-40 text-white rounded-md text-[13px] font-medium transition-colors shadow-card flex items-center justify-center space-x-1.5"
             >
-              {generating ? (
-                <>
-                  <RefreshCw className="w-4 h-4 animate-spin" />
-                  Compiling Live Report...
-                </>
-              ) : (
-                <>
-                  <FileText className="w-4 h-4" />
-                  Generate Audit Report
-                </>
-              )}
+              <Plus className="w-4 h-4" />
+              <span>{generating ? 'Compiling Report...' : 'Generate Executive Report'}</span>
             </button>
           </form>
         </div>
 
-        {/* Existing Reports List */}
-        <div className="lg:col-span-2 bg-surface p-5 rounded-lg border border-border shadow-sm space-y-4">
-          <div className="flex items-center justify-between pb-3 border-b border-border">
-            <h2 className="text-base font-semibold text-text-primary">Generated Reports & Download Center</h2>
-            <span className="text-xs text-text-muted font-mono">{reports.length} reports logged</span>
+        {/* Recent Reports Table */}
+        <div className="lg:col-span-2 bg-white p-5 rounded-lg border border-[#E6E8EC] space-y-4">
+          <div className="pb-3 border-b border-[#E6E8EC] flex items-center justify-between">
+            <h2 className="text-[15px] font-semibold text-[#20242C]">Generated Reports</h2>
+            <span className="text-[12px] text-[#697386]">{reports.length} available</span>
           </div>
 
-          {loading ? (
-            <div className="py-12 flex flex-col items-center justify-center text-text-muted">
-              <RefreshCw className="w-6 h-6 animate-spin mb-2" />
-              <p className="text-sm">Loading reports repository from MySQL...</p>
-            </div>
-          ) : reports.length === 0 ? (
-            <div className="py-12 text-center text-text-muted">
-              <FileText className="w-12 h-12 text-slate-300 mx-auto mb-2" />
-              <p className="text-sm font-medium text-text-primary">No reports generated yet</p>
-              <p className="text-xs mt-1">Use the generator on the left to create your first executive retention audit report.</p>
-            </div>
-          ) : (
-            <div className="overflow-x-auto">
-              <table className="w-full text-left text-xs border-collapse">
-                <thead>
-                  <tr className="border-b border-border bg-slate-50/50 text-text-muted font-semibold uppercase">
-                    <th className="py-2.5 px-3">Title & Type</th>
-                    <th className="py-2.5 px-3">Format</th>
-                    <th className="py-2.5 px-3">Date Generated</th>
-                    <th className="py-2.5 px-3 text-right">Actions</th>
+          <div className="overflow-x-auto border border-[#E6E8EC] rounded-md">
+            <table className="w-full text-left border-collapse text-[13px]">
+              <thead>
+                <tr>
+                  <th className="data-table-header">Title</th>
+                  <th className="data-table-header">Type</th>
+                  <th className="data-table-header">Generated Date</th>
+                  <th className="data-table-header text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {loading ? (
+                  <tr>
+                    <td colSpan={4} className="p-8 text-center text-[#697386]">
+                      Loading report history...
+                    </td>
                   </tr>
-                </thead>
-                <tbody className="divide-y divide-border">
-                  {reports.map((r) => (
-                    <tr key={r.id} className="hover:bg-slate-50/60 transition-colors">
-                      <td className="py-3 px-3">
-                        <div className="font-medium text-text-primary">{r.title}</div>
-                        <div className="text-[11px] text-text-muted capitalize mt-0.5">
-                          {r.report_type.replace('_', ' ')}
-                        </div>
+                ) : reports.length === 0 ? (
+                  <tr>
+                    <td colSpan={4} className="p-8 text-center text-[#697386]">
+                      No reports generated yet. Click "Generate Executive Report" to compile one.
+                    </td>
+                  </tr>
+                ) : (
+                  reports.map((rep) => (
+                    <tr key={rep.id} className="data-table-row">
+                      <td className="data-table-cell font-medium text-[#20242C]">{rep.title}</td>
+                      <td className="data-table-cell text-[#697386]">{rep.report_type}</td>
+                      <td className="data-table-cell text-[#697386]">
+                        {new Date(rep.created_at).toLocaleDateString()}
                       </td>
-                      <td className="py-3 px-3">
-                        <span className="px-2 py-0.5 rounded font-mono uppercase text-[10px] bg-slate-100 border border-slate-200 text-text-secondary">
-                          CSV
-                        </span>
-                      </td>
-                      <td className="py-3 px-3 text-text-secondary">
-                        <div className="flex items-center gap-1.5">
-                          <Calendar className="w-3.5 h-3.5 text-text-muted" />
-                          <span>{new Date(r.created_at).toLocaleString()}</span>
-                        </div>
-                      </td>
-                      <td className="py-3 px-3 text-right space-x-2">
-                        {r.content_json && (
-                          <button
-                            onClick={() => setPreviewReport(r)}
-                            className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-medium text-text-secondary bg-surface border border-border rounded hover:bg-slate-50 transition-colors"
-                          >
-                            <Eye className="w-3.5 h-3.5" />
-                            Preview
-                          </button>
-                        )}
+                      <td className="data-table-cell text-right space-x-2">
                         <button
-                          onClick={() => handleDownload(r.id)}
-                          className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-medium text-white bg-brand rounded hover:bg-slate-800 transition-colors shadow-sm"
+                          onClick={() => setPreviewReport(rep)}
+                          className="text-[12px] font-medium text-[#315E81] hover:underline"
                         >
-                          <Download className="w-3.5 h-3.5" />
-                          Download CSV
+                          View
+                        </button>
+                        <button
+                          onClick={() => handleDownload(rep.id)}
+                          className="text-[12px] font-medium text-[#697386] hover:text-[#20242C]"
+                        >
+                          Download
                         </button>
                       </td>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
 
       {/* Preview Modal */}
       {previewReport && (
-        <div className="fixed inset-0 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4 z-50">
-          <div className="bg-surface rounded-lg border border-border shadow-xl max-w-2xl w-full p-6 space-y-4 max-h-[85vh] flex flex-col">
-            <div className="flex items-center justify-between pb-3 border-b border-border">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/30 backdrop-blur-xs">
+          <div className="bg-white border border-[#E6E8EC] rounded-lg shadow-xl max-w-2xl w-full max-h-[80vh] flex flex-col p-6 space-y-4">
+            <div className="flex items-center justify-between pb-3 border-b border-[#E6E8EC]">
               <div>
-                <h3 className="text-base font-bold text-text-primary">{previewReport.title}</h3>
-                <p className="text-xs text-text-muted mt-0.5">
-                  Type: {previewReport.report_type.replace('_', ' ')} • Generated {new Date(previewReport.created_at).toLocaleString()}
-                </p>
+                <h3 className="text-[16px] font-semibold text-[#20242C]">{previewReport.title}</h3>
+                <span className="text-[12px] text-[#697386]">Generated: {new Date(previewReport.created_at).toLocaleString()}</span>
               </div>
               <button
                 onClick={() => setPreviewReport(null)}
-                className="text-text-muted hover:text-text-primary p-1 rounded"
+                className="p-1 text-[#697386] hover:text-[#20242C]"
               >
-                ✕
+                <X className="w-5 h-5" />
               </button>
             </div>
 
-            <div className="overflow-y-auto flex-1 font-mono text-xs bg-slate-900 text-slate-100 p-4 rounded-md">
-              <pre className="whitespace-pre-wrap">
-                {JSON.stringify(previewReport.content_json, null, 2)}
-              </pre>
+            <div className="flex-1 overflow-y-auto pr-2 text-[13px] text-[#20242C] space-y-3 leading-relaxed whitespace-pre-line">
+              {typeof previewReport.content === 'string'
+                ? previewReport.content
+                : JSON.stringify(previewReport.content, null, 2)}
             </div>
 
-            <div className="flex justify-end gap-3 pt-3 border-t border-border">
+            <div className="pt-3 border-t border-[#E6E8EC] flex justify-end space-x-2">
               <button
                 onClick={() => setPreviewReport(null)}
-                className="px-4 py-2 border border-border text-xs font-medium rounded-md hover:bg-slate-50"
+                className="px-4 py-2 border border-[#E6E8EC] rounded-md text-[13px] font-medium text-[#20242C] hover:bg-[#F7F8FA]"
               >
                 Close
               </button>
               <button
                 onClick={() => handleDownload(previewReport.id)}
-                className="px-4 py-2 bg-brand text-white text-xs font-medium rounded-md hover:bg-slate-800 flex items-center gap-1.5"
+                className="px-4 py-2 bg-[#315E81] hover:bg-[#274b68] text-white rounded-md text-[13px] font-medium shadow-card flex items-center space-x-1.5"
               >
-                <Download className="w-3.5 h-3.5" />
-                Download CSV
+                <Download className="w-4 h-4" />
+                <span>Download Report</span>
               </button>
             </div>
           </div>
