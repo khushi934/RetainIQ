@@ -272,8 +272,8 @@ export const CustomerDirectoryPage: React.FC = () => {
                     </td>
                     <td className="data-table-cell">
                       <RiskBadge
-                        tier={c.latest_risk_tier || (c.latest_prediction ? c.latest_prediction.risk_tier : null)}
-                        probability={c.latest_predicted_churn_probability || (c.latest_prediction ? c.latest_prediction.predicted_churn_probability : null)}
+                        tier={c.latest_risk_tier || c.latest_prediction?.risk_tier || undefined}
+                        probability={c.latest_predicted_churn_probability ?? c.latest_prediction?.predicted_churn_probability ?? undefined}
                       />
                     </td>
                     <td className="data-table-cell text-right">

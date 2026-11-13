@@ -33,10 +33,10 @@ export const Navbar: React.FC<NavbarProps> = ({ onToggleMobileSidebar }) => {
     navigate('/login');
   };
 
-  // Derive readable breadcrumb from route
   const getBreadcrumb = () => {
     const p = location.pathname;
     if (p.includes('/dashboard')) return 'Overview';
+    if (p.includes('/customers/')) return 'Customer Profile';
     if (p.includes('/customers')) return 'Customers';
     if (p.includes('/import')) return 'Data Imports';
     if (p.includes('/quality')) return 'Data Quality';
@@ -53,44 +53,44 @@ export const Navbar: React.FC<NavbarProps> = ({ onToggleMobileSidebar }) => {
   };
 
   return (
-    <header className="h-14 bg-white border-b border-[#E6E8EC] px-4 md:px-6 flex items-center justify-between sticky top-0 z-20">
+    <header className="h-16 bg-white border-b border-[#E6E8EC] px-4 md:px-6 flex items-center justify-between sticky top-0 z-20 shrink-0">
       <div className="flex items-center space-x-3">
         {onToggleMobileSidebar && (
           <button
             onClick={onToggleMobileSidebar}
-            className="md:hidden p-1.5 text-[#697386] hover:text-[#20242C] rounded-md hover:bg-[#F7F8FA]"
+            className="md:hidden p-2 text-[#697386] hover:text-[#20242C] rounded-lg hover:bg-[#F7F8FA]"
             aria-label="Open navigation menu"
           >
             <Menu className="w-5 h-5" />
           </button>
         )}
 
-        {/* Breadcrumb / Page Title */}
-        <div className="flex items-center space-x-2 text-[13px]">
-          <span className="text-[#697386] hidden sm:inline">Workspace</span>
-          <span className="text-[#E6E8EC] hidden sm:inline">/</span>
-          <span className="font-semibold text-[#20242C]">{getBreadcrumb()}</span>
+        {/* Page title / breadcrumb */}
+        <div className="flex items-center space-x-2 text-[15px]">
+          <span className="text-[#697386] hidden sm:inline font-medium">Workspace</span>
+          <span className="text-[#D1D5DB] hidden sm:inline">/</span>
+          <span className="font-semibold text-[#20242C] text-[16px]">{getBreadcrumb()}</span>
         </div>
       </div>
 
       <div className="flex items-center space-x-3">
         {/* Workspace Selector Badge */}
-        <div className="flex items-center space-x-1.5 px-2.5 py-1 bg-[#F7F8FA] border border-[#E6E8EC] rounded-md text-[12px] font-medium text-[#20242C]">
-          <span className="w-1.5 h-1.5 rounded-full bg-[#3E8B69]"></span>
-          <span className="max-w-[140px] truncate">{workspaceName}</span>
+        <div className="hidden sm:flex items-center space-x-2 px-3 py-1.5 bg-[#F7F8FA] border border-[#E6E8EC] rounded-lg text-sm font-medium text-[#20242C]">
+          <span className="w-2 h-2 rounded-full bg-[#3E8B69] shrink-0"></span>
+          <span className="max-w-[160px] truncate">{workspaceName}</span>
         </div>
 
         {/* User Profile Menu */}
         <div className="relative">
           <button
             onClick={() => setMenuOpen(!menuOpen)}
-            className="flex items-center space-x-2 p-1 pl-2 text-[13px] font-medium text-[#20242C] hover:bg-[#F7F8FA] rounded-md transition-colors"
+            className="flex items-center space-x-2 p-1.5 pl-2.5 text-sm font-medium text-[#20242C] hover:bg-[#F7F8FA] rounded-lg transition-colors border border-transparent hover:border-[#E6E8EC]"
           >
-            <div className="w-6 h-6 rounded-full bg-[#E6E8EC] text-[#20242C] flex items-center justify-center text-[11px] font-semibold">
+            <div className="w-7 h-7 rounded-full bg-[#315E81] text-white flex items-center justify-center text-xs font-bold">
               {userName.charAt(0).toUpperCase()}
             </div>
-            <span className="hidden sm:inline text-[#20242C] text-[13px]">{userName}</span>
-            <ChevronDown className="w-3.5 h-3.5 text-[#697386]" />
+            <span className="hidden sm:inline text-[#20242C] text-sm">{userName}</span>
+            <ChevronDown className="w-4 h-4 text-[#697386]" />
           </button>
 
           {menuOpen && (
@@ -99,26 +99,23 @@ export const Navbar: React.FC<NavbarProps> = ({ onToggleMobileSidebar }) => {
                 className="fixed inset-0 z-30"
                 onClick={() => setMenuOpen(false)}
               />
-              <div className="absolute right-0 mt-1.5 w-56 bg-white border border-[#E6E8EC] rounded-lg shadow-dropdown p-1.5 z-40 text-xs">
-                <div className="px-3 py-2 border-b border-[#E6E8EC] mb-1">
-                  <div className="font-medium text-[#20242C]">{userName}</div>
-                  <div className="text-[11px] text-[#697386] truncate mt-0.5">{userEmail || 'Active Analyst'}</div>
+              <div className="absolute right-0 mt-2 w-60 bg-white border border-[#E6E8EC] rounded-xl shadow-xl p-2 z-40">
+                <div className="px-3 py-2.5 border-b border-[#E6E8EC] mb-1.5">
+                  <div className="font-semibold text-sm text-[#20242C]">{userName}</div>
+                  <div className="text-xs text-[#697386] truncate mt-0.5">{userEmail || 'Active Analyst'}</div>
                 </div>
                 <button
-                  onClick={() => {
-                    setMenuOpen(false);
-                    navigate('/app/settings');
-                  }}
-                  className="w-full text-left px-3 py-1.5 text-[#20242C] hover:bg-[#F7F8FA] rounded-md transition-colors flex items-center space-x-2"
+                  onClick={() => { setMenuOpen(false); navigate('/app/settings'); }}
+                  className="w-full text-left px-3 py-2 text-sm text-[#20242C] hover:bg-[#F7F8FA] rounded-lg transition-colors flex items-center space-x-2.5"
                 >
-                  <UserIcon className="w-3.5 h-3.5 text-[#697386]" />
+                  <UserIcon className="w-4 h-4 text-[#697386]" />
                   <span>Account & Settings</span>
                 </button>
                 <button
                   onClick={handleLogout}
-                  className="w-full text-left px-3 py-1.5 text-[#C75B58] hover:bg-[#FBF2F2] rounded-md transition-colors flex items-center space-x-2 mt-0.5"
+                  className="w-full text-left px-3 py-2 text-sm text-[#C75B58] hover:bg-[#FBF2F2] rounded-lg transition-colors flex items-center space-x-2.5 mt-0.5"
                 >
-                  <LogOut className="w-3.5 h-3.5" />
+                  <LogOut className="w-4 h-4" />
                   <span>Sign out</span>
                 </button>
               </div>

@@ -6,7 +6,8 @@ import {
   Brain,
   FlaskConical,
   UploadCloud,
-  FileSpreadsheet
+  FileSpreadsheet,
+  RefreshCw
 } from 'lucide-react';
 import {
   ResponsiveContainer,
@@ -16,7 +17,6 @@ import {
   YAxis,
   Tooltip,
   CartesianGrid,
-  Legend
 } from 'recharts';
 import { api } from '../services/api';
 import {
@@ -70,248 +70,230 @@ export const DashboardPage: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center py-28 text-[#697386]">
-        <div className="flex flex-col items-center space-y-3">
-          <div className="w-6 h-6 border-2 border-[#E6E8EC] border-t-[#315E81] rounded-full animate-spin"></div>
-          <span className="text-[13px] font-medium">Aggregating retention analytics from MySQL...</span>
+      <div className="flex items-center justify-center py-32 text-[#697386]">
+        <div className="flex flex-col items-center space-y-4">
+          <div className="w-8 h-8 border-3 border-[#E6E8EC] border-t-[#315E81] rounded-full animate-spin"></div>
+          <span className="text-base font-medium">Loading retention analytics…</span>
         </div>
       </div>
     );
   }
 
-  // Format risk distribution data for chart
   const riskChartData = riskDist.map((d) => ({
-    tier: d.tier,
+    tier: d.risk_tier || d.tier || 'Unknown',
     customers: d.customer_count,
     percentage: d.percentage
   }));
 
   return (
-    <div className="space-y-7">
-      {/* Page Header */}
+    <div className="space-y-8">
+      {/* ── Page Header ── */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-[26px] font-semibold text-[#20242C] tracking-tight">
-            Overview
-          </h1>
-          <p className="text-[14px] text-[#697386] mt-1">
+          <h1 className="text-3xl font-bold text-[#20242C] tracking-tight">Overview</h1>
+          <p className="text-base text-[#697386] mt-1">
             Monitor customer retention performance and identify areas that need attention.
           </p>
         </div>
-
-        <div className="flex items-center space-x-2.5">
+        <div className="flex items-center gap-3 flex-wrap">
+          <button
+            onClick={loadDashboardData}
+            className="flex items-center gap-2 px-4 py-2 bg-white border border-[#E6E8EC] hover:bg-[#F7F8FA] text-[#20242C] rounded-lg text-sm font-medium transition-colors"
+          >
+            <RefreshCw className="w-4 h-4 text-[#697386]" />
+            Refresh
+          </button>
           <Link
             to="/app/import"
-            className="px-3.5 py-2 bg-white border border-[#E6E8EC] hover:bg-[#F7F8FA] text-[#20242C] rounded-md text-[13px] font-medium transition-colors flex items-center space-x-1.5 shadow-card"
+            className="flex items-center gap-2 px-4 py-2 bg-white border border-[#E6E8EC] hover:bg-[#F7F8FA] text-[#20242C] rounded-lg text-sm font-medium transition-colors"
           >
             <UploadCloud className="w-4 h-4 text-[#697386]" />
-            <span>Import Data</span>
+            Import Data
           </Link>
           <Link
             to="/app/decision-lab"
-            className="px-3.5 py-2 bg-[#315E81] hover:bg-[#274b68] text-white rounded-md text-[13px] font-medium transition-colors flex items-center space-x-1.5 shadow-card"
+            className="flex items-center gap-2 px-4 py-2 bg-[#315E81] hover:bg-[#274b68] text-white rounded-lg text-sm font-medium transition-colors"
           >
             <FlaskConical className="w-4 h-4" />
-            <span>Retention Decision Lab</span>
+            Decision Lab
           </Link>
         </div>
       </div>
 
       {error && (
-        <div className="p-4 bg-[#FBF2F2] border border-[#F2D5D4] rounded-lg text-[13px] text-[#C75B58]">
+        <div className="p-4 bg-[#FBF2F2] border border-[#F2D5D4] rounded-xl text-sm text-[#C75B58]">
           {error}
         </div>
       )}
 
-      {/* KPI Cards (Section 7: 4 Clean Cards) */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {/* 1. Total Customers */}
+      {/* ── KPI Cards ── */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5">
         <StatCard
           title="Total Customers"
           value={overview?.total_customers.toLocaleString() || '0'}
-          subtitle={`${overview?.active_customers || 0} active, ${overview?.churned_customers || 0} historically churned`}
-          formula="COUNT(*) from customers table in active workspace"
+          subtitle={`${overview?.active_customers || 0} active · ${overview?.churned_customers || 0} churned`}
+          formula="COUNT(*) from customers in active workspace"
         />
-
-        {/* 2. Historical Churn Rate */}
         <StatCard
           title="Historical Churn Rate"
           value={`${overview?.observed_churn_rate_pct || 0}%`}
-          subtitle={`Observed historical retention rate: ${overview?.observed_retention_rate_pct || 0}%`}
-          formula="Observed churned customers / Total customers with known churn status * 100"
+          subtitle={`Retention rate: ${overview?.observed_retention_rate_pct || 0}%`}
+          formula="Observed churned customers / Total customers × 100"
           badge={{
-            text: (overview?.observed_churn_rate_pct || 0) > 25 ? 'Elevated Churn' : 'Baseline',
+            text: (overview?.observed_churn_rate_pct || 0) > 25 ? 'Elevated' : 'Baseline',
             variant: (overview?.observed_churn_rate_pct || 0) > 25 ? 'warning' : 'neutral'
           }}
         />
-
-        {/* 3. Predicted High-Risk Customers */}
         <StatCard
-          title="Predicted High-Risk Customers"
+          title="Predicted High-Risk"
           value={overview?.high_risk_customers_count?.toLocaleString() || '0'}
-          subtitle={`$${(overview?.revenue_at_risk || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} MRR exposure`}
-          formula="Customers scored by Random Forest classifier with predicted probability >= 0.60"
+          subtitle={`$${(overview?.revenue_at_risk || 0).toLocaleString(undefined, { maximumFractionDigits: 0 })} MRR at risk`}
+          formula="Customers with predicted churn probability ≥ 0.60"
           badge={{
-            text: (overview?.high_risk_customers_count || 0) > 0 ? 'Action Required' : 'Low Exposure',
+            text: (overview?.high_risk_customers_count || 0) > 0 ? 'Action Needed' : 'Low Exposure',
             variant: (overview?.high_risk_customers_count || 0) > 0 ? 'negative' : 'positive'
           }}
         />
-
-        {/* 4. Average Customer Tenure */}
         <StatCard
-          title="Average Customer Tenure"
+          title="Avg. Customer Tenure"
           value={`${overview?.avg_tenure_months || 0} mos`}
-          subtitle={`Median customer tenure: ${overview?.median_tenure_months || 0} months`}
-          formula="AVG(tenure_months) and windowed median across customer records"
+          subtitle={`Median: ${overview?.median_tenure_months || 0} months`}
+          formula="AVG(tenure_months) across all customer records"
         />
       </div>
 
-      {/* Two-Column Balanced Charts (Section 7) */}
+      {/* ── Charts Row ── */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Left: Historical Churn by Contract Type */}
-        <div className="bg-white border border-[#E6E8EC] rounded-lg p-5">
-          <div className="mb-4">
-            <h2 className="text-[15px] font-semibold text-[#20242C]">
+        {/* Historical Churn by Contract */}
+        <div className="bg-white border border-[#E6E8EC] rounded-xl p-6">
+          <div className="mb-5">
+            <h2 className="text-lg font-semibold text-[#20242C]">
               Historical Churn by Contract Type
             </h2>
-            <p className="text-[12px] text-[#697386] mt-0.5">
-              Observed churn percentage across contract structures in database.
+            <p className="text-sm text-[#697386] mt-1">
+              Observed churn rate across contract structures from MySQL aggregation.
             </p>
           </div>
-
-          <div className="h-64 w-full">
+          <div className="h-72 w-full">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={contracts} margin={{ top: 10, right: 10, left: -15, bottom: 0 }}>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E6E8EC" />
-                <XAxis dataKey="contract_type" stroke="#697386" fontSize={12} tickLine={false} />
-                <YAxis stroke="#697386" fontSize={12} tickLine={false} unit="%" />
+              <BarChart data={contracts} margin={{ top: 10, right: 10, left: -10, bottom: 5 }}>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#F0F2F5" />
+                <XAxis dataKey="contract_type" stroke="#697386" fontSize={13} tickLine={false} axisLine={false} />
+                <YAxis stroke="#697386" fontSize={13} tickLine={false} axisLine={false} unit="%" />
                 <Tooltip
-                  contentStyle={{ backgroundColor: '#20242C', borderColor: '#20242C', color: '#FFFFFF', fontSize: '12px', borderRadius: '6px' }}
-                  formatter={(val: any) => [`${val}%`, 'Observed Churn Rate']}
+                  contentStyle={{ backgroundColor: '#20242C', border: 'none', color: '#FFF', fontSize: '13px', borderRadius: '8px', padding: '10px 14px' }}
+                  formatter={(val: any) => [`${val}%`, 'Churn Rate']}
                 />
-                <Bar dataKey="churn_rate_pct" name="Churn Rate" fill="#315E81" radius={[3, 3, 0, 0]} />
+                <Bar dataKey="churn_rate_pct" name="Churn Rate" fill="#315E81" radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </div>
         </div>
 
-        {/* Right: Customer Risk Distribution */}
-        <div className="bg-white border border-[#E6E8EC] rounded-lg p-5">
-          <div className="mb-4">
-            <h2 className="text-[15px] font-semibold text-[#20242C]">
+        {/* Customer Risk Distribution */}
+        <div className="bg-white border border-[#E6E8EC] rounded-xl p-6">
+          <div className="mb-5">
+            <h2 className="text-lg font-semibold text-[#20242C]">
               Customer Risk Distribution
             </h2>
-            <p className="text-[12px] text-[#697386] mt-0.5">
-              Distribution of customer accounts by ML model predicted churn probability tier.
+            <p className="text-sm text-[#697386] mt-1">
+              Customer accounts by ML model predicted churn probability tier.
             </p>
           </div>
-
-          <div className="h-64 w-full">
+          <div className="h-72 w-full">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={riskChartData} margin={{ top: 10, right: 10, left: -15, bottom: 0 }}>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E6E8EC" />
-                <XAxis dataKey="tier" stroke="#697386" fontSize={12} tickLine={false} />
-                <YAxis stroke="#697386" fontSize={12} tickLine={false} />
+              <BarChart data={riskChartData} margin={{ top: 10, right: 10, left: -10, bottom: 5 }}>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#F0F2F5" />
+                <XAxis dataKey="tier" stroke="#697386" fontSize={13} tickLine={false} axisLine={false} />
+                <YAxis stroke="#697386" fontSize={13} tickLine={false} axisLine={false} />
                 <Tooltip
-                  contentStyle={{ backgroundColor: '#20242C', borderColor: '#20242C', color: '#FFFFFF', fontSize: '12px', borderRadius: '6px' }}
-                  formatter={(val: any) => [`${val} accounts`, 'Customer Count']}
+                  contentStyle={{ backgroundColor: '#20242C', border: 'none', color: '#FFF', fontSize: '13px', borderRadius: '8px', padding: '10px 14px' }}
+                  formatter={(val: any) => [`${val} accounts`, 'Count']}
                 />
-                <Bar dataKey="customers" name="Customers" fill="#438A83" radius={[3, 3, 0, 0]} />
+                <Bar dataKey="customers" name="Customers" fill="#438A83" radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </div>
         </div>
       </div>
 
-      {/* Lower Analytical Section: Tenure Cohorts Analysis */}
-      <div className="bg-white border border-[#E6E8EC] rounded-lg p-5">
-        <div className="mb-4">
-          <h2 className="text-[15px] font-semibold text-[#20242C]">
-            Customer Tenure Analysis
-          </h2>
-          <p className="text-[12px] text-[#697386] mt-0.5">
-            Observed churn rates and customer volume segmented by tenure duration cohorts.
+      {/* ── Tenure Cohort Analysis ── */}
+      <div className="bg-white border border-[#E6E8EC] rounded-xl p-6">
+        <div className="mb-5">
+          <h2 className="text-lg font-semibold text-[#20242C]">Customer Tenure Cohort Analysis</h2>
+          <p className="text-sm text-[#697386] mt-1">
+            Observed churn rates segmented by customer tenure duration cohorts.
           </p>
         </div>
-
-        <div className="h-60 w-full">
+        <div className="h-72 w-full">
           <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={tenureCohorts} margin={{ top: 10, right: 10, left: -15, bottom: 0 }}>
-              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E6E8EC" />
-              <XAxis dataKey="cohort_name" stroke="#697386" fontSize={12} tickLine={false} />
-              <YAxis stroke="#697386" fontSize={12} tickLine={false} unit="%" />
+            <BarChart data={tenureCohorts} margin={{ top: 10, right: 10, left: -10, bottom: 5 }}>
+              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#F0F2F5" />
+              <XAxis dataKey="cohort_range" stroke="#697386" fontSize={13} tickLine={false} axisLine={false} />
+              <YAxis stroke="#697386" fontSize={13} tickLine={false} axisLine={false} unit="%" />
               <Tooltip
-                contentStyle={{ backgroundColor: '#20242C', borderColor: '#20242C', color: '#FFFFFF', fontSize: '12px', borderRadius: '6px' }}
-                formatter={(val: any) => [`${val}%`, 'Observed Churn Rate']}
+                contentStyle={{ backgroundColor: '#20242C', border: 'none', color: '#FFF', fontSize: '13px', borderRadius: '8px', padding: '10px 14px' }}
+                formatter={(val: any) => [`${val}%`, 'Churn Rate']}
               />
-              <Bar dataKey="churn_rate_pct" name="Churn Rate" fill="#D69A37" radius={[3, 3, 0, 0]} />
+              <Bar dataKey="churn_rate_pct" name="Churn Rate" fill="#D69A37" radius={[4, 4, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
         </div>
       </div>
 
-      {/* Recent Activity: High-Risk Customers & Data Imports */}
+      {/* ── Bottom Row: High Risk Table + Recent Datasets ── */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Highest Predicted Risk Customers Table */}
-        <div className="lg:col-span-2 bg-white border border-[#E6E8EC] rounded-lg p-5">
-          <div className="flex items-center justify-between mb-4">
+        {/* High Risk Table */}
+        <div className="lg:col-span-2 bg-white border border-[#E6E8EC] rounded-xl overflow-hidden">
+          <div className="flex items-center justify-between p-6 border-b border-[#E6E8EC]">
             <div>
-              <h2 className="text-[15px] font-semibold text-[#20242C]">
-                Highest Predicted Risk Customers
-              </h2>
-              <p className="text-[12px] text-[#697386] mt-0.5">
-                Accounts identified by the ML classifier with highest churn probability (&ge; 60%)
-              </p>
+              <h2 className="text-lg font-semibold text-[#20242C]">Highest Predicted Risk Customers</h2>
+              <p className="text-sm text-[#697386] mt-0.5">Accounts with churn probability ≥ 60% from ML classifier</p>
             </div>
             <Link
               to="/app/customers"
-              className="text-[13px] font-medium text-[#315E81] hover:underline flex items-center space-x-1"
+              className="flex items-center gap-1.5 text-sm font-medium text-[#315E81] hover:underline"
             >
-              <span>View Directory</span>
-              <ArrowRight className="w-3.5 h-3.5" />
+              View all <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
 
-          <div className="overflow-x-auto border border-[#E6E8EC] rounded-md">
+          <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>
                 <tr>
                   <th className="data-table-header">Customer ID</th>
                   <th className="data-table-header">Contract</th>
                   <th className="data-table-header">Tenure</th>
-                  <th className="data-table-header text-right">Monthly Charges</th>
-                  <th className="data-table-header">Model Risk Tier</th>
+                  <th className="data-table-header text-right">Monthly</th>
+                  <th className="data-table-header">Risk Tier</th>
                 </tr>
               </thead>
               <tbody>
                 {highRiskCustomers.map((c) => (
                   <tr key={c.id} className="data-table-row">
-                    <td className="data-table-cell font-mono text-[12px] text-[#315E81] font-medium">
+                    <td className="data-table-cell font-mono text-[#315E81] font-semibold">
                       <Link to={`/app/customers/${c.id}`} className="hover:underline">
                         {c.customer_identifier}
                       </Link>
                     </td>
-                    <td className="data-table-cell text-[13px] text-[#20242C]">
-                      {c.contract_type}
-                    </td>
-                    <td className="data-table-cell text-[13px] text-[#697386]">
-                      {c.tenure_months} mos
-                    </td>
-                    <td className="data-table-cell text-[13px] text-[#20242C] font-mono text-right font-medium">
+                    <td className="data-table-cell text-[#20242C]">{c.contract_type}</td>
+                    <td className="data-table-cell text-[#697386]">{c.tenure_months} mos</td>
+                    <td className="data-table-cell text-[#20242C] font-mono text-right font-semibold">
                       ${c.monthly_charges.toFixed(2)}
                     </td>
                     <td className="data-table-cell">
                       <RiskBadge
-                        tier={c.latest_prediction?.risk_tier || 'High'}
-                        probability={c.latest_prediction?.predicted_churn_probability}
+                        tier={c.latest_prediction?.risk_tier || c.latest_risk_tier || 'High'}
+                        probability={c.latest_prediction?.predicted_churn_probability ?? c.latest_predicted_churn_probability}
                       />
                     </td>
                   </tr>
                 ))}
                 {highRiskCustomers.length === 0 && (
                   <tr>
-                    <td colSpan={5} className="p-6 text-center text-[13px] text-[#697386]">
-                      No high-risk customer accounts identified.
+                    <td colSpan={5} className="p-8 text-center text-sm text-[#697386]">
+                      No high-risk customers identified. Import customer data to run predictions.
                     </td>
                   </tr>
                 )}
@@ -320,46 +302,39 @@ export const DashboardPage: React.FC = () => {
           </div>
         </div>
 
-        {/* Recent Data Ingestion History */}
-        <div className="bg-white border border-[#E6E8EC] rounded-lg p-5">
-          <div className="flex items-center justify-between mb-4">
+        {/* Recent Datasets */}
+        <div className="bg-white border border-[#E6E8EC] rounded-xl overflow-hidden">
+          <div className="flex items-center justify-between p-6 border-b border-[#E6E8EC]">
             <div>
-              <h2 className="text-[15px] font-semibold text-[#20242C]">
-                Data Imports
-              </h2>
-              <p className="text-[12px] text-[#697386] mt-0.5">
-                Recently ingested customer datasets in MySQL
-              </p>
+              <h2 className="text-lg font-semibold text-[#20242C]">Data Imports</h2>
+              <p className="text-sm text-[#697386] mt-0.5">Recent datasets in MySQL</p>
             </div>
             <Link
               to="/app/import"
-              className="text-[13px] font-medium text-[#315E81] hover:underline flex items-center space-x-1"
+              className="flex items-center gap-1.5 text-sm font-medium text-[#315E81] hover:underline"
             >
-              <span>Manage</span>
-              <ArrowRight className="w-3.5 h-3.5" />
+              Manage <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
 
-          <div className="space-y-3">
-            {recentDatasets.slice(0, 4).map((ds, idx) => (
+          <div className="p-4 space-y-3">
+            {recentDatasets.slice(0, 5).map((ds, idx) => (
               <div
                 key={ds.id || idx}
-                className="p-3 bg-[#F7F8FA] border border-[#E6E8EC] rounded-md flex items-start space-x-3"
+                className="flex items-start gap-3 p-3 bg-[#F7F8FA] border border-[#E6E8EC] rounded-lg"
               >
-                <FileSpreadsheet className="w-4 h-4 text-[#315E81] shrink-0 mt-0.5" />
+                <FileSpreadsheet className="w-5 h-5 text-[#315E81] shrink-0 mt-0.5" />
                 <div className="min-w-0 flex-1">
-                  <div className="text-[13px] font-medium text-[#20242C] truncate">
-                    {ds.name}
-                  </div>
-                  <div className="text-[11px] text-[#697386] mt-0.5">
-                    {ds.row_count?.toLocaleString()} rows &bull; {ds.status || 'imported'}
+                  <div className="text-sm font-semibold text-[#20242C] truncate">{ds.name}</div>
+                  <div className="text-xs text-[#697386] mt-0.5">
+                    {ds.row_count?.toLocaleString()} rows · {ds.status || 'imported'}
                   </div>
                 </div>
               </div>
             ))}
             {recentDatasets.length === 0 && (
-              <div className="p-6 text-center text-[12px] text-[#697386]">
-                No recent dataset uploads.
+              <div className="py-8 text-center text-sm text-[#697386]">
+                No datasets imported yet.
               </div>
             )}
           </div>

@@ -17,8 +17,8 @@ export const AppLayout: React.FC = () => {
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col min-w-0 h-full overflow-hidden">
         <Navbar onToggleMobileSidebar={() => setMobileSidebarOpen(true)} />
-        <main className="flex-1 overflow-y-auto p-5 md:p-8">
-          <div className="max-w-7xl mx-auto w-full">
+        <main className="flex-1 overflow-y-auto px-5 py-6 md:px-8 md:py-8">
+          <div className="max-w-screen-xl mx-auto w-full">
             <Outlet />
           </div>
         </main>

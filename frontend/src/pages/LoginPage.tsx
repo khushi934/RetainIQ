@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Database, ShieldCheck, ArrowRight, AlertCircle } from 'lucide-react';
+import { AlertCircle } from 'lucide-react';
 import { api } from '../services/api';
 
 export const LoginPage: React.FC = () => {
@@ -28,33 +28,36 @@ export const LoginPage: React.FC = () => {
     }
   };
 
-  return (
-    <div className="min-h-screen bg-[#F8FAFC] flex flex-col justify-center py-12 px-6 sm:px-8">
-      <div className="sm:mx-auto sm:w-full sm:max-w-md text-center">
-        <Link to="/" className="inline-flex items-center space-x-2.5 mb-3">
-          <div className="w-9 h-9 rounded-lg bg-slate-900 flex items-center justify-center text-white font-bold text-base shadow-sm">
-            RQ
-          </div>
-          <span className="font-bold text-xl text-slate-900 tracking-tight">RetainIQ</span>
-        </Link>
-        <h2 className="text-2xl font-bold text-slate-900 tracking-tight">
-          Sign in to your workspace
-        </h2>
-      </div>
+  const inputClass = "w-full px-4 py-3 border border-[#E6E8EC] rounded-lg text-base text-[#20242C] placeholder-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[#315E81]/30 focus:border-[#315E81] transition-colors bg-white";
 
-      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-        <div className="bg-white py-8 px-6 sm:px-8 border border-slate-200 rounded-xl shadow-xs">
+  return (
+    <div className="min-h-screen bg-[#F7F8FA] flex items-center justify-center px-4 py-16">
+      <div className="w-full max-w-sm">
+        {/* Logo */}
+        <div className="text-center mb-8">
+          <Link to="/" className="inline-flex items-center gap-3 mb-6">
+            <div className="w-10 h-10 rounded-xl bg-[#315E81] flex items-center justify-center text-white font-bold text-base shadow-sm">
+              RQ
+            </div>
+            <span className="font-bold text-2xl text-[#20242C] tracking-tight">RetainIQ</span>
+          </Link>
+          <h1 className="text-2xl font-bold text-[#20242C] tracking-tight">Sign in to your workspace</h1>
+          <p className="text-base text-[#697386] mt-2">Enter your credentials to continue.</p>
+        </div>
+
+        {/* Card */}
+        <div className="bg-white border border-[#E6E8EC] rounded-2xl p-8 shadow-sm">
           {error && (
-            <div className="mb-4 p-3 bg-rose-50 border border-rose-200 rounded-md flex items-start space-x-2 text-rose-800 text-xs">
-              <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
+            <div className="mb-5 p-4 bg-[#FBF2F2] border border-[#F2D5D4] rounded-lg flex items-start gap-3 text-[#C75B58] text-sm">
+              <AlertCircle className="w-5 h-5 shrink-0 mt-0.5" />
               <span>{error}</span>
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-5">
             <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1">
-                Work Email Address
+              <label className="block text-sm font-semibold text-[#20242C] mb-2">
+                Email address
               </label>
               <input
                 type="email"
@@ -62,12 +65,12 @@ export const LoginPage: React.FC = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="analyst@company.com"
-                className="w-full px-3 py-2 border border-slate-300 rounded-md text-sm text-slate-900 focus:outline-none focus:ring-1 focus:ring-slate-900 focus:border-slate-900"
+                className={inputClass}
               />
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1">
+              <label className="block text-sm font-semibold text-[#20242C] mb-2">
                 Password
               </label>
               <input
@@ -76,22 +79,22 @@ export const LoginPage: React.FC = () => {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
-                className="w-full px-3 py-2 border border-slate-300 rounded-md text-sm text-slate-900 focus:outline-none focus:ring-1 focus:ring-slate-900 focus:border-slate-900"
+                className={inputClass}
               />
             </div>
 
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-2.5 px-4 bg-slate-900 hover:bg-slate-800 text-white rounded-md text-xs font-semibold transition-colors shadow-xs"
+              className="w-full py-3 px-5 bg-[#315E81] hover:bg-[#274b68] disabled:opacity-60 text-white rounded-lg text-base font-semibold transition-colors shadow-sm mt-2"
             >
-              {loading ? 'Authenticating...' : 'Sign In'}
+              {loading ? 'Signing in…' : 'Sign In'}
             </button>
           </form>
 
-          <div className="mt-6 text-center text-xs text-slate-500">
+          <div className="mt-6 text-center text-sm text-[#697386]">
             Don't have an account?{' '}
-            <Link to="/register" className="font-semibold text-blue-600 hover:underline">
+            <Link to="/register" className="font-semibold text-[#315E81] hover:underline">
               Create a workspace
             </Link>
           </div>

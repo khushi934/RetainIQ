@@ -1,41 +1,34 @@
 import React from 'react';
 
 interface RiskBadgeProps {
-  tier?: string | null;
-  probability?: number | null;
+  tier?: 'Low' | 'Medium' | 'High' | string;
+  probability?: number;
 }
 
 export const RiskBadge: React.FC<RiskBadgeProps> = ({ tier, probability }) => {
-  if (!tier) {
-    return (
-      <span className="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-medium bg-[#F7F8FA] text-[#697386] border border-[#E6E8EC]">
-        Unscored
-      </span>
-    );
-  }
+  const styles = {
+    High: 'bg-[#FBF2F2] text-[#C75B58] border-[#F2D5D4]',
+    Medium: 'bg-[#FDF7EE] text-[#D69A37] border-[#F7E4C4]',
+    Low: 'bg-[#F0F7F3] text-[#3E8B69] border-[#D4EADB]',
+  };
 
-  const normalized = tier.toLowerCase();
-  let colorStyle = 'bg-[#F7F8FA] text-[#697386] border-[#E6E8EC]';
-  let dotColor = 'bg-[#697386]';
+  const dotColors = {
+    High: 'bg-[#C75B58]',
+    Medium: 'bg-[#D69A37]',
+    Low: 'bg-[#3E8B69]',
+  };
 
-  if (normalized === 'high') {
-    colorStyle = 'bg-[#FBF2F2] text-[#C75B58] border-[#F2D5D4]';
-    dotColor = 'bg-[#C75B58]';
-  } else if (normalized === 'medium') {
-    colorStyle = 'bg-[#FDF7EE] text-[#D69A37] border-[#F7E4C4]';
-    dotColor = 'bg-[#D69A37]';
-  } else if (normalized === 'low') {
-    colorStyle = 'bg-[#F0F7F3] text-[#3E8B69] border-[#D4EADB]';
-    dotColor = 'bg-[#3E8B69]';
-  }
+  const resolvedTier = (tier as keyof typeof styles) || 'Low';
+  const style = styles[resolvedTier] || styles.Low;
+  const dotColor = dotColors[resolvedTier] || dotColors.Low;
 
   return (
-    <span className={`inline-flex items-center space-x-1.5 px-2 py-0.5 rounded text-[12px] font-medium border ${colorStyle}`}>
-      <span className={`w-1.5 h-1.5 rounded-full ${dotColor}`}></span>
-      <span>{tier}</span>
-      {probability !== undefined && probability !== null && (
-        <span className="opacity-75 font-mono text-[11px]">
-          ({Math.round(probability * 100)}%)
+    <span className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-sm font-semibold border ${style}`}>
+      <span className={`w-2 h-2 rounded-full ${dotColor} shrink-0`} />
+      {resolvedTier}
+      {probability !== undefined && (
+        <span className="opacity-70 text-xs font-normal">
+          {(probability * 100).toFixed(0)}%
         </span>
       )}
     </span>
