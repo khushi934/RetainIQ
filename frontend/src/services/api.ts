@@ -7,7 +7,7 @@ import {
   Investigation, Campaign, Report, AssistantAnswer
 } from '../types';
 
-const RAW_API_URL = (import.meta.env.VITE_API_URL as string | undefined) || '';
+const RAW_API_URL = (import.meta.env.VITE_API_URL as string | undefined)?.trim() || '';
 const API_BASE = RAW_API_URL ? `${RAW_API_URL.replace(/\/$/, '')}/api` : '/api';
 
 function getAuthHeader(): Record<string, string> {
@@ -34,7 +34,10 @@ async function handleResponse<T>(res: Response): Promise<T> {
         errMessage = typeof errJson.detail === 'string' ? errJson.detail : JSON.stringify(errJson.detail);
       }
     } catch {
-      // ignore parse error
+      // response body was not JSON (e.g. static HTML 404 or 405)
+    }
+    if (res.status === 405) {
+      errMessage = "Server returned 405 (Method Not Allowed). If deployed on Vercel, please set VITE_API_URL in your Vercel project settings to your live backend URL (e.g. Render). If running locally, ensure backend is running on http://127.0.0.1:8000.";
     }
     throw new Error(errMessage);
   }

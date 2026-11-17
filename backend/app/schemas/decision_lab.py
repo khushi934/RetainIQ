@@ -35,7 +35,7 @@ class ScenarioResultResponse(BaseModel):
     expected_net_benefit: float
     cost_per_incremental_retained: Optional[float] = None
     break_even_retention_uplift: Optional[float] = None
-    roi_pct: float
+    roi_pct: Optional[float] = 0.0
     sensitivity_analysis: List[SensitivityScenario] = []
     calculation_version: str = "v1.0"
     calculated_at: datetime

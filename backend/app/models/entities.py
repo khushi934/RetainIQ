@@ -264,6 +264,12 @@ class ScenarioResult(Base):
     calculation_version: Mapped[str] = mapped_column(String(50), default="v1.0", nullable=False)
     calculated_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow, nullable=False)
 
+    @property
+    def roi_pct(self) -> float:
+        if self.total_campaign_cost and self.total_campaign_cost > 0:
+            return round((self.expected_net_benefit / self.total_campaign_cost) * 100, 2)
+        return 0.0
+
     scenario = relationship("RetentionScenario", back_populates="results")
 
 
